@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">RateYourPlace</string>
+    <string name="welcome_to_rate_my_place">Welcome to Rate My Place</string>
+    <string name="welcome_to_rate_your_place">Welcome to Rate Your Place</string>
+    <string name="welcome_n_to_n_rate_your_place">Welcome \n to \n Rate Your Place</string>
+    <string name="log_in">Log in</string>
+    <string name="sign_up">Sign up</string>
+</resources>
