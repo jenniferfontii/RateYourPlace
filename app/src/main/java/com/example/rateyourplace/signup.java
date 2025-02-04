@@ -68,7 +68,7 @@ public class signup extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
                             Toast.makeText(signup.this, "Signup successful!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(signup.this, login.class));
+                            startActivity(new Intent(signup.this, home.class));
                             finish();
                         } else {
                             Toast.makeText(signup.this, "Signup failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
