@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "270908483480",
+    "project_id": "rateyourplace-a2781",
+    "storage_bucket": "rateyourplace-a2781.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270908483480:android:976d02b89864c48fbf6ded",
+        "android_client_info": {
+          "package_name": "com.example.rateyourplace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqPlQ_H8iwr5kHb_LVvfHHSPQGhzkG6Ds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
