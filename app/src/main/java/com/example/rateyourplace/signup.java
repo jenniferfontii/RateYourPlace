@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.Task;
 
 public class signup extends AppCompatActivity {
     private EditText emailEt, passwordEt;
-    private Button signupBtn;
     private FirebaseAuth auth;
 
     @Override
@@ -43,7 +42,7 @@ public class signup extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         emailEt = findViewById(R.id.email);
         passwordEt = findViewById(R.id.password);
-        signupBtn = findViewById(R.id.signupBtn);
+        Button signupBtn = findViewById(R.id.submitsignupBtn);
 
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
