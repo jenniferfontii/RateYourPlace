@@ -39,13 +39,14 @@
         app:layout_constraintVertical_bias="0.731" />
 
     <Button
-        android:id="@+id/signupBtn"
+        android:id="@+id/loginBtn"
         android:layout_width="122dp"
         android:layout_height="38dp"
         android:backgroundTint="#f3f3f4"
         android:text="@string/log_in"
         android:fontFamily="@font/poppins_semibold"
         android:textColor="#70c1fe"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

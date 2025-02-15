@@ -27,6 +27,8 @@ import com.google.android.gms.tasks.Task;
 public class signup extends AppCompatActivity {
     private EditText emailEt, passwordEt;
     private FirebaseAuth auth;
+    private Button loginBtn;
+    private Button signupBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,21 @@ public class signup extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         emailEt = findViewById(R.id.email);
         passwordEt = findViewById(R.id.password);
-        Button signupBtn = findViewById(R.id.submitsignupBtn);
+        loginBtn = findViewById(R.id.loginBtn);
+        signupBtn = findViewById(R.id.submitsignupBtn);
 
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 registerUser();
+            }
+        });
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(signup.this, login.class);
+                startActivity(intent);
             }
         });
     }
