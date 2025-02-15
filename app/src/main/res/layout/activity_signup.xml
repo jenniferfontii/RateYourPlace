@@ -6,30 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f3f3f4"
-    tools:context=".log_in">
+    tools:context=".signup">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="264dp"
         android:layout_height="85dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="@string/login_to_your_account"
+        android:text="@string/create_an_account1"
         android:textAlignment="center"
         android:textColor="#0353a4"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.188" />
 
     <Button
-        android:id="@+id/loginBtn"
+        android:id="@+id/submitsignupBtn"
         android:layout_width="157dp"
         android:layout_height="43dp"
         android:backgroundTint="#0353a4"
         android:fontFamily="@font/poppins_semibold"
-        android:text="@string/log_in"
+        android:text="@string/sign_up"
         android:textColor="#f3f3f4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,13 +39,14 @@
         app:layout_constraintVertical_bias="0.731" />
 
     <Button
-        android:id="@+id/signupBtn"
+        android:id="@+id/loginBtn"
         android:layout_width="122dp"
         android:layout_height="38dp"
         android:backgroundTint="#f3f3f4"
-        android:text="Sign up"
+        android:text="@string/log_in"
         android:fontFamily="@font/poppins_semibold"
         android:textColor="#70c1fe"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -56,7 +58,7 @@
         android:id="@+id/textview2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/don_t_have_account"
+        android:text="@string/already_have_an_account"
         android:textSize="18sp"
         android:fontFamily="@font/poppins_bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -81,7 +83,7 @@
         app:layout_constraintVertical_bias="0.575" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -98,11 +100,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_semibold"
-        android:text="Username"
+        android:text="Email"
         android:textColor="#f92a82"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.219"
+        app:layout_constraintHorizontal_bias="0.196"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.374" />
