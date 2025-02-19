@@ -16,4 +16,6 @@
     <string name="landlord">Landlord:</string>
     <string name="additional_comments">Additional comments:</string>
     <string name="submit">submit</string>
+    <string name="plus">+</string>
+    <string name="main_property_image">Main Property Image</string>
 </resources>
