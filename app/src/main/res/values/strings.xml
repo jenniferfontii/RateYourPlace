@@ -32,4 +32,7 @@
     <string name="new_password">New password</string>
     <string name="insert_new_password">Insert new password</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="search_by_map_view">search by map view</string>
+    <string name="add_property">Add property</string>
+    <string name="search_your_saved_properties">Search your saved properties</string>
 </resources>
