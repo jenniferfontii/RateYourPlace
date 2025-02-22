@@ -18,6 +18,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class home extends AppCompatActivity {
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(R.id.nav_search);
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
