@@ -13,9 +13,9 @@
         android:layout_width="253dp"
         android:layout_height="39dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="Search by address:"
+        android:text="@string/search_by_address"
         android:textAlignment="center"
-        android:textColor="#0353a4"
+        android:textColor="@color/darkBlue"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,9 +29,9 @@
         android:layout_width="123dp"
         android:layout_height="31dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="Close to you:"
+        android:text="@string/close_to_you"
         android:textAlignment="center"
-        android:textColor="#0353a4"
+        android:textColor="@color/darkBlue"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
         android:id="@+id/addPropertyBtn"
         android:layout_width="247dp"
         android:layout_height="42dp"
-        android:backgroundTint="#70C1FE"
+        android:backgroundTint="@color/lightBlue"
         android:fontFamily="@font/poppins_semibold"
         android:text="Add property"
         android:textColor="#f3f3f4"
@@ -56,14 +56,18 @@
         app:layout_constraintVertical_bias="0.879" />
 
     <androidx.appcompat.widget.SearchView
-        android:layout_width="345dp"
-        android:layout_height="56dp"
+        android:id="@+id/searchView"
+        android:layout_width="278dp"
+        android:layout_height="46dp"
+        android:background="@drawable/searchview_border"
+        android:iconifiedByDefault="false"
+        app:barrierMargin="@dimen/material_emphasis_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.575"
+        app:layout_constraintHorizontal_bias="0.27"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.154" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
@@ -76,5 +80,20 @@
         app:itemTextColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:itemBackground="@drawable/nav_item_background"/>
+
+    <ImageButton
+        android:id="@+id/searchMap"
+        android:layout_width="70dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="#F6F5F5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/searchView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.156"
+        app:srcCompat="@drawable/ic_map" />
 </androidx.constraintlayout.widget.ConstraintLayout>
