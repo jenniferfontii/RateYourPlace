@@ -35,4 +35,5 @@
     <string name="search_by_map_view">search by map view</string>
     <string name="add_property">Add property</string>
     <string name="search_your_saved_properties">Search your saved properties</string>
+    <string name="list_view">List view</string>
 </resources>
