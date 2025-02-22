@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f3f3f4"
-    tools:context=".home">
+    tools:context=".home"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="0dp">
 
     <TextView
         android:id="@+id/textView"
@@ -70,18 +72,18 @@
         app:layout_constraintVertical_bias="0.154" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/bottom_nav_menu"
+        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+        app:itemBackground="@drawable/nav_item_background"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:itemBackground="@drawable/nav_item_background"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
     <ImageButton
         android:id="@+id/searchMap"
