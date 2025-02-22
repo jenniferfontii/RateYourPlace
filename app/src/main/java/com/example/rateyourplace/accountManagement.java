@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class accountManagement extends AppCompatActivity {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(R.id.nav_account);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +34,35 @@ public class accountManagement extends AppCompatActivity {
         });
 
         Button signout = findViewById(R.id.signOut);
+        TextView changepsw =findViewById(R.id.changePsw);
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(R.id.nav_account);
 
-        signout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(accountManagement.this, MainActivity.class);
-                startActivity(intent);
+        navBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_search) {
+                startActivity(new Intent(accountManagement.this, home.class));
+                return true;
+            } else if (itemId == R.id.nav_saved) {
+                startActivity(new Intent(accountManagement.this, savedProperties.class));
+                return true;
+            } else if (itemId == R.id.nav_account) {
+
+                return true;
             }
+
+            return false;
+        });
+
+        changepsw.setOnClickListener(view -> {
+            changePassword dialog = new changePassword();
+            dialog.show(getSupportFragmentManager(), "ChangePassword");
+        });
+
+        signout.setOnClickListener(view -> {
+            Intent intent = new Intent(accountManagement.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 }
