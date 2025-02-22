@@ -21,4 +21,10 @@
     <string name="search_by_address">Search by address:</string>
     <string name="close_to_you">Close to you:</string>
     <string name="title_activity_maps_search">mapsSearch</string>
+    <string name="profile_picture">profile picture</string>
+    <string name="change_password">Change password</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_out">Sign out</string>
+    <string name="your_account">Your account</string>
 </resources>
