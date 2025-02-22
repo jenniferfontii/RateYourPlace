@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class home extends AppCompatActivity {
         });
 
         Button addPropertyBtn = findViewById(R.id.addPropertyBtn);
+        ImageButton mapView = findViewById(R.id.searchMap);
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_search);
 
@@ -51,6 +53,14 @@ public class home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(home.this, addProperty.class);
+                startActivity(intent);
+            }
+        });
+
+        mapView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(home.this, mapsSearch.class);
                 startActivity(intent);
             }
         });
