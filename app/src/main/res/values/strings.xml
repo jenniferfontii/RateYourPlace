@@ -18,4 +18,6 @@
     <string name="submit">submit</string>
     <string name="plus">+</string>
     <string name="main_property_image">Main Property Image</string>
+    <string name="search_by_address">Search by address:</string>
+    <string name="close_to_you">Close to you:</string>
 </resources>
