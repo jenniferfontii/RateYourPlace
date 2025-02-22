@@ -10,4 +10,12 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="create_an_account">Create an account</string>
     <string name="create_an_account1">Create an account</string>
+    <string name="location">Location:</string>
+    <string name="property_conditions">Property conditions:</string>
+    <string name="safety">Safety:</string>
+    <string name="landlord">Landlord:</string>
+    <string name="additional_comments">Additional comments:</string>
+    <string name="submit">submit</string>
+    <string name="plus">+</string>
+    <string name="main_property_image">Main Property Image</string>
 </resources>
