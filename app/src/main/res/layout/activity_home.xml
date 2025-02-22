@@ -80,7 +80,8 @@
         app:itemTextColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:itemBackground="@drawable/nav_item_background"/>
 
     <ImageButton
         android:id="@+id/searchMap"

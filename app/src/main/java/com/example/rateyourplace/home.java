@@ -12,6 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.SearchView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class home extends AppCompatActivity {
 
     @Override
@@ -26,6 +28,24 @@ public class home extends AppCompatActivity {
         });
 
         Button addPropertyBtn = findViewById(R.id.addPropertyBtn);
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(R.id.nav_search);
+
+        navBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_search) {
+                return true;
+            } else if (itemId == R.id.nav_saved) {
+                startActivity(new Intent(home.this, savedProperties.class));
+                return true;
+            } else if (itemId == R.id.nav_account) {
+                startActivity(new Intent(home.this, accountManagement.class));
+                return true;
+            }
+
+            return false;
+        });
 
         addPropertyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
