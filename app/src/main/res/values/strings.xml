@@ -36,4 +36,6 @@
     <string name="add_property">Add property</string>
     <string name="search_your_saved_properties">Search your saved properties</string>
     <string name="list_view">List view</string>
+    <string name="adress_123_nottingham">Adress 123 Nottingham</string>
+    <string name="save_property">save property</string>
 </resources>
