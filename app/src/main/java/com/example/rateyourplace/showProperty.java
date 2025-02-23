@@ -34,7 +34,7 @@ public class showProperty extends AppCompatActivity {
         Button addReview = findViewById(R.id.addReview);
 
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(0);
+        navBar.setSelectedItemId(-1);
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

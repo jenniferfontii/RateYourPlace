@@ -36,6 +36,7 @@ public class home extends AppCompatActivity {
 
         Button addPropertyBtn = findViewById(R.id.addPropertyBtn);
         ImageButton mapView = findViewById(R.id.searchMap);
+        Button viewPropertyTest = findViewById(R.id.viewProperty); //THIS IS A TEST AND TO BE DELETED ONCE ACTUAL LOGIC IS IN
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_search);
 
@@ -69,6 +70,12 @@ public class home extends AppCompatActivity {
                 Intent intent = new Intent(home.this, mapsSearch.class);
                 startActivity(intent);
             }
+        });
+
+        //THIS IS JUST A TEST AND TO BE DELETED ONCE LOGIC IS ACTUALLY ON
+        viewPropertyTest.setOnClickListener(view -> {
+            Intent intent = new Intent(home.this, showProperty.class);
+            startActivity(intent);
         });
     }
 }
