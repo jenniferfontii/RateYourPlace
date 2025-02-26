@@ -2,80 +2,60 @@ package com.example.rateyourplace;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.appcompat.widget.SearchView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class home extends AppCompatActivity {
+public class showProperty extends AppCompatActivity {
 
     @Override
     protected void onResume() {
         super.onResume();
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(R.id.nav_search);
+        navBar.setSelectedItemId(0);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_show_property);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Button addReview = findViewById(R.id.addReview);
 
-        Button addPropertyBtn = findViewById(R.id.addPropertyBtn);
-        ImageButton mapView = findViewById(R.id.searchMap);
-        Button viewPropertyTest = findViewById(R.id.viewProperty); //THIS IS A TEST AND TO BE DELETED ONCE ACTUAL LOGIC IS IN
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(R.id.nav_search);
+        navBar.setSelectedItemId(-1);
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_search) {
+                startActivity(new Intent(showProperty.this, home.class));
                 return true;
             } else if (itemId == R.id.nav_saved) {
-                startActivity(new Intent(home.this, savedProperties.class));
+                startActivity(new Intent(showProperty.this, savedProperties.class));
                 return true;
             } else if (itemId == R.id.nav_account) {
-                startActivity(new Intent(home.this, accountManagement.class));
+                startActivity(new Intent(showProperty.this, accountManagement.class));
                 return true;
             }
 
             return false;
         });
 
-        addPropertyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(home.this, addProperty.class);
-                startActivity(intent);
-            }
-        });
-
-        mapView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, mapsSearch.class);
-                startActivity(intent);
-            }
-        });
-
-        //THIS IS JUST A TEST AND TO BE DELETED ONCE LOGIC IS ACTUALLY ON
-        viewPropertyTest.setOnClickListener(view -> {
-            Intent intent = new Intent(home.this, showProperty.class);
-            startActivity(intent);
+        addReview.setOnClickListener(view -> {
+            leaveReview dialog = new leaveReview();
+            dialog.show(getSupportFragmentManager(), "Leave a review");
         });
     }
 }
