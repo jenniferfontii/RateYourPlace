@@ -46,7 +46,7 @@ public class savedProperties extends AppCompatActivity {
             } else if (itemId == R.id.nav_saved) {
                 return true;
             } else if (itemId == R.id.nav_account) {
-                startActivity(new Intent(savedProperties.this, accountManagement.class));
+                startActivity(new Intent(savedProperties.this, user.class));
                 return true;
             }
 

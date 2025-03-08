@@ -19,7 +19,7 @@ public class accountManagement extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(R.id.nav_account);
+        navBar.setSelectedItemId(0);
     }
 
     @Override
@@ -48,8 +48,7 @@ public class accountManagement extends AppCompatActivity {
                 startActivity(new Intent(accountManagement.this, savedProperties.class));
                 return true;
             } else if (itemId == R.id.nav_account) {
-
-                return true;
+                startActivity(new Intent(accountManagement.this, user.class));
             }
 
             return false;

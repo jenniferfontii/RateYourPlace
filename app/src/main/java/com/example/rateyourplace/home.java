@@ -49,7 +49,7 @@ public class home extends AppCompatActivity {
                 startActivity(new Intent(home.this, savedProperties.class));
                 return true;
             } else if (itemId == R.id.nav_account) {
-                startActivity(new Intent(home.this, accountManagement.class));
+                startActivity(new Intent(home.this, user.class));
                 return true;
             }
 
