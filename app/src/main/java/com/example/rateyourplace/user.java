@@ -2,6 +2,7 @@ package com.example.rateyourplace;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -37,17 +38,18 @@ public class user extends AppCompatActivity {
         TextView manageAccount = findViewById(R.id.manageAccount);
         TextView settings = findViewById(R.id.settings);
         TextView pastReviews = findViewById(R.id.pastReviews);
+        Button signout = findViewById(R.id.signOut);
 
         manageAccount.setOnClickListener(view -> {
             startActivity(new Intent(user.this, accountManagement.class));
         });
 
        settings.setOnClickListener(view -> {
-            startActivity(new Intent(user.this, accountManagement.class));
+            startActivity(new Intent(user.this, settings.class));
         });
 
         pastReviews.setOnClickListener(view -> {
-            startActivity(new Intent(user.this, accountManagement.class));
+            startActivity(new Intent(user.this, pastReviews.class));
         });
 
 

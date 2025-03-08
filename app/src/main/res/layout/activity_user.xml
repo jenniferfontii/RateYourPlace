@@ -8,6 +8,7 @@
     tools:context=".user">
 
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -40,56 +41,67 @@
 
     <TextView
         android:id="@+id/manageAccount"
-        android:layout_width="match_parent"
+        android:layout_width="391dp"
         android:layout_height="wrap_content"
-        android:focusable="true"
         android:clickable="true"
+        android:focusable="true"
         android:fontFamily="@font/poppins_bold"
         android:text="@string/manage_your_account"
-        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings"
+        android:layout_width="391dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/settings"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
-        android:focusable="true"
-        android:clickable="true"
-        android:text="@string/settings"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.602" />
+        app:layout_constraintVertical_bias="0.594" />
 
     <TextView
         android:id="@+id/pastReviews"
-        android:layout_width="match_parent"
+        android:layout_width="391dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
-        android:focusable="true"
         android:clickable="true"
-        android:text="@string/see_past_reviews"
-        android:textAlignment="center"
+        android:focusable="true"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/past_reviews"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.706" />
+        app:layout_constraintVertical_bias="0.705" />
+
+    <Button
+        android:id="@+id/signOut"
+        android:layout_width="157dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/darkBlue"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/sign_out"
+        android:textColor="#f3f3f4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.868" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"

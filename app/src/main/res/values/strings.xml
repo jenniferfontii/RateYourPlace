@@ -41,4 +41,5 @@
     <string name="manage_your_account">Manage your account</string>
     <string name="settings">Settings</string>
     <string name="see_past_reviews">See past reviews</string>
+    <string name="past_reviews">Past reviews</string>
 </resources>
