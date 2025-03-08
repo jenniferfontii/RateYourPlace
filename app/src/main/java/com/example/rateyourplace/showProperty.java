@@ -3,6 +3,7 @@ package com.example.rateyourplace;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class showProperty extends AppCompatActivity {
             return insets;
         });
         Button addReview = findViewById(R.id.addReview);
+        ImageButton back = findViewById(R.id.back);
 
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(-1);
@@ -56,6 +58,10 @@ public class showProperty extends AppCompatActivity {
         addReview.setOnClickListener(view -> {
             leaveReview dialog = new leaveReview();
             dialog.show(getSupportFragmentManager(), "Leave a review");
+        });
+
+        back.setOnClickListener(view -> {
+            finish();
         });
     }
 }
