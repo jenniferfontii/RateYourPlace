@@ -46,7 +46,7 @@ public class showProperty extends AppCompatActivity {
                 startActivity(new Intent(showProperty.this, savedProperties.class));
                 return true;
             } else if (itemId == R.id.nav_account) {
-                startActivity(new Intent(showProperty.this, accountManagement.class));
+                startActivity(new Intent(showProperty.this, user.class));
                 return true;
             }
 

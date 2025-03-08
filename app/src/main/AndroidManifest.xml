@@ -17,6 +17,9 @@
         android:theme="@style/Theme.RateYourPlace"
         tools:targetApi="31">
         <activity
+            android:name=".user"
+            android:exported="false" />
+        <activity
             android:name=".showProperty"
             android:exported="false" />
 
