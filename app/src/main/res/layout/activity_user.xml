@@ -17,7 +17,7 @@
         android:text="@string/welcome"
         android:textAlignment="center"
         android:textColor="@color/darkBlue"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -41,7 +41,7 @@
 
     <TextView
         android:id="@+id/manageAccount"
-        android:layout_width="391dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
@@ -57,7 +57,7 @@
 
     <TextView
         android:id="@+id/settings"
-        android:layout_width="391dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
@@ -67,14 +67,14 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.774"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.594" />
 
     <TextView
         android:id="@+id/pastReviews"
-        android:layout_width="391dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
@@ -84,7 +84,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.774"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.705" />
