@@ -25,11 +25,11 @@ public class deleteAccount extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_leave_review, null);
+        View view = inflater.inflate(R.layout.fragment_delete_account, null);
 
         builder.setView(view)
                 .setTitle("Delete account")
-                .setPositiveButton("Delete account", (dialog, id) -> dismiss())
+                .setPositiveButton("Delete", (dialog, id) -> dismiss())
                 .setNegativeButton("Cancel", (dialog, id) -> dismiss());
         return builder.create();
     }
