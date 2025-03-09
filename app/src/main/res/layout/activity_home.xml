@@ -10,21 +10,13 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp">
 
-    <!-- Test purpose to be deleted -->
-    <Button
-        android:id="@+id/viewProperty"
-        android:layout_width="247dp"
-        android:layout_height="42dp"
-        android:backgroundTint="@color/lightBlue"
-        android:fontFamily="@font/poppins_semibold"
-        android:text="view test property"
-        android:textColor="#f3f3f4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.554"
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.542" />
+        app:layout_constraintVertical_bias="0.67" />
 
     <TextView
         android:id="@+id/textView"
