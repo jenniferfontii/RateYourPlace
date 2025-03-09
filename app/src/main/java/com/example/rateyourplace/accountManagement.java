@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,8 +16,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class accountManagement extends AppCompatActivity {
+
+    private FirebaseAuth auth;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -37,6 +46,25 @@ public class accountManagement extends AppCompatActivity {
         TextView changepsw =findViewById(R.id.changePsw);
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_account);
+        ImageButton back = findViewById(R.id.back);
+        EditText email = findViewById(R.id.email);
+
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        email.setEnabled(false);
+
+        if (user != null) {
+            email.setText(user.getEmail());
+
+        } else {
+            Toast.makeText(this, "No user is logged in", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        back.setOnClickListener(view -> {
+            finish();
+        });
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -60,6 +88,7 @@ public class accountManagement extends AppCompatActivity {
         });
 
         signout.setOnClickListener(view -> {
+            auth.signOut();
             Intent intent = new Intent(accountManagement.this, MainActivity.class);
             startActivity(intent);
         });
