@@ -50,4 +50,5 @@
     <string name="deleteAccountMsg">This action will permanently \n delete your account \n Do you want to proceed?</string>
     <string name="map_button">map button</string>
     <string name="reviews">Reviews:</string>
+    <string name="saved_button">saved button</string>
 </resources>
