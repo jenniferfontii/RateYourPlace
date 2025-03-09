@@ -47,4 +47,5 @@
     <string name="current_location">Current location</string>
     <string name="high_contrast">High contrast</string>
     <string name="delete_account">Delete account</string>
+    <string name="deleteAccountMsg">This action will permanently \n delete your account \n Do you want to proceed?</string>
 </resources>
