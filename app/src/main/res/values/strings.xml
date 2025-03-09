@@ -43,4 +43,8 @@
     <string name="see_past_reviews">See past reviews</string>
     <string name="past_reviews">Past reviews</string>
     <string name="back_button">back button</string>
+    <string name="notification">Notification</string>
+    <string name="current_location">Current location</string>
+    <string name="high_contrast">High contrast</string>
+    <string name="delete_account">Delete account</string>
 </resources>
