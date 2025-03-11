@@ -51,4 +51,7 @@
     <string name="map_button">map button</string>
     <string name="reviews">Reviews:</string>
     <string name="saved_button">saved button</string>
+    <string name="add_images">Add Images</string>
+    <string name="property_image">Property Image</string>
+    <string name="address">Address</string>
 </resources>
