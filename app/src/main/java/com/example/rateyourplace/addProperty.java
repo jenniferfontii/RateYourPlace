@@ -37,7 +37,6 @@ public class addProperty extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_property);
 
-        // Initialize UI elements
         recyclerView = findViewById(R.id.recyclerViewImages);
         address = findViewById(R.id.address);
         comments = findViewById(R.id.comments);
@@ -48,16 +47,22 @@ public class addProperty extends AppCompatActivity {
         selectImagesBtn = findViewById(R.id.addImage);
         submitBtn = findViewById(R.id.submitBtn);
 
-        // Initialize RecyclerView
+
         imageAdapter = new ImageAdapter(this, imageUris);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(imageAdapter);
 
-        // Set up image selection
         selectImagesBtn.setOnClickListener(v -> openImagePicker());
 
-        // Set up form submission
-        submitBtn.setOnClickListener(v -> savePropertyToFirestore());
+        submitBtn.setOnClickListener(v -> {
+            savePropertyToFirestore();
+            Intent intent = new Intent(addProperty.this, home.class);
+            startActivity(intent);
+            Toast.makeText(this, "Property added succesfully", Toast.LENGTH_SHORT).show();
+        });
+
+
+
     }
 
     // Image picker launcher
