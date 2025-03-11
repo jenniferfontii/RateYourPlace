@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +38,8 @@ public class addProperty extends AppCompatActivity {
     private EditText address, comments;
     private RatingBar ratingLocation, ratingConditions, ratingSafety, ratingLandlord;
     private Button selectImagesBtn, submitBtn;
-    BottomNavigationView navBar;
+    private BottomNavigationView navBar;
+    private ImageButton back;
     private LinearLayout rootLayout;
 
     @Override
@@ -65,6 +66,7 @@ public class addProperty extends AppCompatActivity {
         submitBtn = findViewById(R.id.submitBtn);
         navBar = findViewById(R.id.bottom_navigation);
         rootLayout = findViewById(R.id.linear);
+        back = findViewById(R.id.back);
 
 
 
@@ -79,6 +81,10 @@ public class addProperty extends AppCompatActivity {
             Intent intent = new Intent(addProperty.this, home.class);
             startActivity(intent);
             Toast.makeText(this, "Property added succesfully", Toast.LENGTH_SHORT).show();
+        });
+
+        back.setOnClickListener(view -> {
+            finish();
         });
 
         navBar.setOnItemSelectedListener(item -> {
