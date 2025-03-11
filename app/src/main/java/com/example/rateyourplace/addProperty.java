@@ -1,20 +1,27 @@
 package com.example.rateyourplace;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -31,7 +38,17 @@ public class addProperty extends AppCompatActivity {
     private EditText address, comments;
     private RatingBar ratingLocation, ratingConditions, ratingSafety, ratingLandlord;
     private Button selectImagesBtn, submitBtn;
+    BottomNavigationView navBar;
+    private LinearLayout rootLayout;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(0);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +63,9 @@ public class addProperty extends AppCompatActivity {
         ratingLandlord = findViewById(R.id.ratingLandlord);
         selectImagesBtn = findViewById(R.id.addImage);
         submitBtn = findViewById(R.id.submitBtn);
+        navBar = findViewById(R.id.bottom_navigation);
+        rootLayout = findViewById(R.id.linear);
+
 
 
         imageAdapter = new ImageAdapter(this, imageUris);
@@ -59,6 +79,44 @@ public class addProperty extends AppCompatActivity {
             Intent intent = new Intent(addProperty.this, home.class);
             startActivity(intent);
             Toast.makeText(this, "Property added succesfully", Toast.LENGTH_SHORT).show();
+        });
+
+        navBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_search) {
+                startActivity(new Intent(addProperty.this, home.class));
+                return true;
+            } else if (itemId == R.id.nav_saved) {
+                startActivity(new Intent(addProperty.this, savedProperties.class));
+                return true;
+            } else if (itemId == R.id.nav_account) {
+                startActivity(new Intent(addProperty.this, user.class));
+            }
+
+            return false;
+        });
+
+        comments.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                navBar.setVisibility(BottomNavigationView.GONE); // Hide navigation bar
+            } else {
+                navBar.setVisibility(BottomNavigationView.VISIBLE);
+            }
+        });
+
+        rootLayout.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Dismiss the keyboard if any view is touched outside the EditText
+                View view = getWindow().getDecorView();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+                // Perform the click action for accessibility
+                rootLayout.performClick();
+            }
+            return false;
         });
 
 
