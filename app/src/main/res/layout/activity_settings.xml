@@ -23,7 +23,7 @@
 
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_bold"
@@ -39,9 +39,9 @@
         app:layout_constraintVertical_bias="0.108" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/profilePic"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:contentDescription="@string/profile_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,50 +51,50 @@
         app:layout_constraintVertical_bias="0.227"
         tools:srcCompat="@tools:sample/avatars" />
 
+
     <Switch
         android:id="@+id/switch1"
         android:layout_width="284dp"
         android:layout_height="27dp"
-        android:text="@string/notification"
         android:fontFamily="@font/poppins_medium"
+        android:text="@string/notification"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.227"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.623"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Switch
         android:id="@+id/switch2"
         android:layout_width="284dp"
         android:layout_height="27dp"
-        android:textSize="18sp"
         android:fontFamily="@font/poppins_medium"
         android:text="@string/current_location"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.378"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.716"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
-
 
     <Switch
         android:id="@+id/switch3"
         android:layout_width="284dp"
         android:layout_height="27dp"
+        android:fontFamily="@font/poppins_medium"
         android:text="@string/high_contrast"
         android:textSize="18sp"
-        android:fontFamily="@font/poppins_medium"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.519"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.813"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
@@ -112,7 +112,7 @@
         app:layout_constraintHorizontal_bias="0.887"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.779" />
+        app:layout_constraintVertical_bias="0.846" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"

@@ -12,6 +12,7 @@ firebaseAuth = "23.2.0"
 materialVersion = "1.9.0"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesMaps = "18.1.0"
+firebaseFirestore = "25.1.2"
 
 [libraries]
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
@@ -25,6 +26,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

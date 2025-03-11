@@ -3,7 +3,9 @@ package com.example.rateyourplace;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +14,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class user extends AppCompatActivity {
+
+    private FirebaseAuth auth;
 
     @Override
     protected void onResume() {
@@ -38,18 +44,37 @@ public class user extends AppCompatActivity {
         TextView manageAccount = findViewById(R.id.manageAccount);
         TextView settings = findViewById(R.id.settings);
         TextView pastReviews = findViewById(R.id.pastReviews);
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
         Button signout = findViewById(R.id.signOut);
+        ImageView profilePic = findViewById(R.id.profilePic);
+        TextView welcome = findViewById(R.id.welcome);
+
+        if (user != null) {
+            Profile.loadProfilePicture(this, profilePic);
+            welcome.setText(String.format("Welcome %s", user.getEmail()));
+
+        } else {
+            Toast.makeText(this, "No user is logged in", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         manageAccount.setOnClickListener(view -> {
             startActivity(new Intent(user.this, accountManagement.class));
         });
 
-       settings.setOnClickListener(view -> {
+        settings.setOnClickListener(view -> {
             startActivity(new Intent(user.this, settings.class));
         });
 
         pastReviews.setOnClickListener(view -> {
             startActivity(new Intent(user.this, pastReviews.class));
+        });
+
+        signout.setOnClickListener(view -> {
+            auth.signOut();
+            Intent intent = new Intent(user.this, MainActivity.class);
+            startActivity(intent);
         });
 
 

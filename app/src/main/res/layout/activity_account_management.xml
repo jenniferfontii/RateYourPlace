@@ -9,8 +9,8 @@
 
     <ImageButton
         android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@null"
         android:contentDescription="@string/back_button"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
@@ -37,38 +37,36 @@
         app:layout_constraintVertical_bias="0.042" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/account"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:clickable="true"
         android:contentDescription="@string/profile_picture"
         android:focusable="true"
-        android:scaleX="8"
-        android:scaleY="8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.524"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.247"
-        tools:src="@drawable/ic_account" />
+        app:srcCompat="@drawable/ic_account" />
+
 
     <TextView
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_semibold"
-        android:text="@string/email"
-        android:textSize="18sp"
         android:labelFor="@+id/email"
+        android:text="@string/email"
         android:textColor="@color/pink"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.196"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.444" />
-
+        app:layout_constraintVertical_bias="0.53" />
 
     <EditText
         android:id="@+id/email"
@@ -80,10 +78,10 @@
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.517" />
+        app:layout_constraintVertical_bias="0.611" />
 
     <TextView
         android:id="@+id/changePsw"
@@ -98,10 +96,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.297"
+        app:layout_constraintHorizontal_bias="0.289"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.657" />
+        app:layout_constraintVertical_bias="0.74" />
 
     <Button
         android:id="@+id/signOut"
