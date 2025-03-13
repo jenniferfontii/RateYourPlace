@@ -35,12 +35,14 @@ public class addProperty extends AppCompatActivity {
     private ImageAdapter imageAdapter;
     private ArrayList<Uri> imageUris = new ArrayList<>();
 
-    private EditText address, comments;
+    private EditText addressET, comments;
     private RatingBar ratingLocation, ratingConditions, ratingSafety, ratingLandlord;
-    private Button selectImagesBtn, submitBtn;
+    private Button selectImagesBtn, submitBtn, addressFinderBtn;
     private BottomNavigationView navBar;
     private ImageButton back;
     private LinearLayout rootLayout;
+    private double selectedLat = 0.0;
+    private double selectedLon = 0.0;
 
     @Override
     protected void onResume() {
@@ -56,7 +58,7 @@ public class addProperty extends AppCompatActivity {
         setContentView(R.layout.activity_add_property);
 
         recyclerView = findViewById(R.id.recyclerViewImages);
-        address = findViewById(R.id.address);
+        addressET = findViewById(R.id.address);
         comments = findViewById(R.id.comments);
         ratingLocation = findViewById(R.id.ratingLocation);
         ratingConditions = findViewById(R.id.ratingConditions);
@@ -67,7 +69,7 @@ public class addProperty extends AppCompatActivity {
         navBar = findViewById(R.id.bottom_navigation);
         rootLayout = findViewById(R.id.linear);
         back = findViewById(R.id.back);
-
+        addressFinderBtn =findViewById(R.id.openAddressFinder);
 
 
         imageAdapter = new ImageAdapter(this, imageUris);
@@ -125,7 +127,15 @@ public class addProperty extends AppCompatActivity {
             return false;
         });
 
-
+        addressFinderBtn.setOnClickListener(view -> {
+                findAddress dialog = new findAddress((address, latitude, longitude) -> {
+                // Set the selected address and coordinates
+                addressET.setText(address);
+                selectedLat = latitude;
+                selectedLon = longitude;
+            });
+            dialog.show(getSupportFragmentManager(), "FindAddressDialog");
+        });
 
     }
 
@@ -171,7 +181,7 @@ public class addProperty extends AppCompatActivity {
 
     // Save property details to Firestore
     private void savePropertyToFirestore() {
-        String address = this.address.getText().toString().trim();
+        String address = this.addressET.getText().toString().trim();
         String comments = this.comments.getText().toString().trim();
         int locationRating = (int) ratingLocation.getRating();
         int conditionRating = (int) ratingConditions.getRating();
@@ -191,6 +201,8 @@ public class addProperty extends AppCompatActivity {
         property.put("safety", safetyRating);
         property.put("landlord", landlordRating);
         property.put("additional_comments", comments);
+        property.put("latitude", selectedLat);
+        property.put("longitude", selectedLon);
 
         // Convert URIs to Strings to store in Firestore
         List<String> imageUrisList = new ArrayList<>();
