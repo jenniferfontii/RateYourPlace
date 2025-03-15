@@ -2,7 +2,9 @@ package com.example.rateyourplace;
 
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Property {
     private String address;
@@ -53,4 +55,5 @@ public class Property {
     public float getAverageRating() {
         return (location + property_condition + safety + landlord) / 4.0f;
     }
+
 }
