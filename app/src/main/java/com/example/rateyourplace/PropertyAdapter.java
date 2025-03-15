@@ -1,6 +1,7 @@
 package com.example.rateyourplace;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,15 +26,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PropertyAdapter extends ArrayAdapter<Property> {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-
 
     public PropertyAdapter(Context context, List<Property> properties) {
         super(context, 0, properties);
@@ -54,10 +52,6 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         RatingBar ratingBar = convertView.findViewById(R.id.ratingBar);
         ImageButton saveBtn = convertView.findViewById(R.id.save);
 
-        saveBtn.setOnClickListener(view -> handleSaveProperty(property, saveBtn));
-
-        checkIfPropertyIsSaved(property.getAddress(), saveBtn);
-
         if (property != null) {
             tvAddress.setText(property.getAddress());
             ratingBar.setRating(property.getAverageRating());
@@ -69,9 +63,20 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
             } else {
                 ivPropertyImage.setImageResource(R.drawable.ic_placeholder);
             }
+
+            saveBtn.setOnClickListener(view -> handleSaveProperty(property, saveBtn));
+            checkIfPropertyIsSaved(property.getAddress(), saveBtn);
+
+            convertView.setOnClickListener(v -> openShowProperty(property));
         }
 
         return convertView;
+    }
+
+    private void openShowProperty(Property property) {
+        Intent intent = new Intent(getContext(), showProperty.class);
+        intent.putExtra("address", property.getAddress());
+        getContext().startActivity(intent);
     }
 
     private void checkIfPropertyIsSaved(String propertyAddress, ImageButton btnSave) {
@@ -94,7 +99,6 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
             }
         }).addOnFailureListener(e -> btnSave.setImageResource(R.drawable.ic_saved));
     }
-
 
     private void handleSaveProperty(Property property, ImageButton btnSave) {
         FirebaseUser user = mAuth.getCurrentUser();
@@ -136,9 +140,6 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         }).addOnFailureListener(e -> Toast.makeText(getContext(), "Error loading saved properties", Toast.LENGTH_SHORT).show());
     }
 
-
-
-
     private void loadImageUsingPicasso(String imageUrl, final ImageView ivPropertyImage) {
         if (imageUrl.startsWith("content://")) {
             try {
@@ -160,5 +161,4 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
                     .into(ivPropertyImage);
         }
     }
-
 }

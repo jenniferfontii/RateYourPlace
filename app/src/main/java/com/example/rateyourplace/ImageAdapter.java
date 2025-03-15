@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
@@ -31,10 +33,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Get the Uri for the image at the current position
         Uri imageUri = imageUris.get(position);
-        // Set the image URI using setImageURI
-        holder.imageView.setImageURI(imageUri);
+
+        if (imageUri != null) {
+            // Picasso to load image
+            Picasso.get()
+                    .load(imageUri)  // Load the image from the Uri
+                    .placeholder(R.drawable.ic_placeholder)  // Placeholder if image is not available
+                    .into(holder.imageView);  // Set the image in ImageView
+        }
     }
 
     @Override
