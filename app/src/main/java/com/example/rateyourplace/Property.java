@@ -1,10 +1,8 @@
 package com.example.rateyourplace;
 
 import android.util.Log;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class Property {
     private String address;
@@ -15,7 +13,7 @@ public class Property {
     private int landlord;
 
     public Property() {
-        // Required empty constructor for Firestore
+
     }
 
     public Property(String address, List<String> imageUris, int location, int property_condition, int safety, int landlord) {
@@ -36,16 +34,13 @@ public class Property {
     }
 
     public String getFirstImageUrl() {
-        List<String> imageUrls = getImageUris(); // Assuming this method returns a list of image URLs
+        List<String> imageUrls = getImageUris();
 
-        // Log all the image URLs
         if (imageUrls != null && !imageUrls.isEmpty()) {
             for (String imageUrl : imageUrls) {
                 Log.d("ImageUrls", "Image URL: " + imageUrl);
             }
-
-            // Return the first image URL
-            return imageUrls.get(0); // Return the first image URL
+            return imageUrls.get(0);
         } else {
             Log.d("ImageUrls", "No images found.");
             return null;
