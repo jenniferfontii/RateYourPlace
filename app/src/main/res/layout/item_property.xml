@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/adress"
+        android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_bold"
@@ -25,9 +25,9 @@
             android:id="@+id/ivMainImage"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
             android:background="@drawable/ic_placeholder"
-            android:contentDescription="@string/main_property_image"/>
+            android:contentDescription="@string/main_property_image"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,6 +43,7 @@
                 android:rating="0"
                 android:scaleX="0.7"
                 android:scaleY="0.7"
+                android:isIndicator="true"
                 android:layout_gravity="center"/>
 
             <ImageButton
