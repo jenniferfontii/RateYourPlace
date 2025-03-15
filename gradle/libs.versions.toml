@@ -29,6 +29,7 @@ material-v190 = { module = "com.google.android.material:material", version.ref =
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+picasso = { group = "com.squareup.picasso", name = "picasso", version = "2.71828" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
