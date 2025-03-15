@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -35,6 +37,11 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         TextView tvAddress = convertView.findViewById(R.id.address);
         ImageView ivPropertyImage = convertView.findViewById(R.id.ivMainImage);
         RatingBar ratingBar = convertView.findViewById(R.id.ratingBar);
+        ImageButton saveBtn = convertView.findViewById(R.id.save);
+
+        saveBtn.setOnClickListener(view -> {
+
+        });
 
         if (property != null) {
             tvAddress.setText(property.getAddress());

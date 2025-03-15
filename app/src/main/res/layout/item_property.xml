@@ -9,23 +9,24 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/poppins_semibold"
         android:text="address"
-        android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textAlignment="textStart"
+        android:textColor="@color/pink"
+        android:layout_margin="8dp"
         android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_margin="8dp">
 
         <ImageView
             android:id="@+id/ivMainImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_centerInParent="true"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
             android:contentDescription="@string/main_property_image"
             android:scaleType="fitCenter" />
 
@@ -47,7 +48,7 @@
                 android:layout_gravity="center"/>
 
             <ImageButton
-                android:id="@+id/btnMap"
+                android:id="@+id/save"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@null"

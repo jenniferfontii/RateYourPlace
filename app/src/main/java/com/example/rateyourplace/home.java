@@ -27,6 +27,13 @@ public class home extends AppCompatActivity {
     private FirebaseFirestore db;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(R.id.nav_search);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -42,6 +49,22 @@ public class home extends AppCompatActivity {
         ImageButton mapView = findViewById(R.id.searchMap);
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_search);
+
+        navBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_search) {
+                return true;
+            } else if (itemId == R.id.nav_saved) {
+                startActivity(new Intent(home.this, savedProperties.class));
+                return true;
+            } else if (itemId == R.id.nav_account) {
+                startActivity(new Intent(home.this, user.class));
+                return true;
+            }
+
+            return false;
+        });
 
         addPropertyBtn.setOnClickListener(v -> startActivity(new Intent(home.this, addProperty.class)));
         mapView.setOnClickListener(view -> startActivity(new Intent(home.this, mapsSearch.class)));
@@ -69,7 +92,7 @@ public class home extends AppCompatActivity {
                         Property property = new Property(address, imageUris, location, propertyCondition, safety, landlord);
                         propertyList.add(property);
                     }
-                    propertyAdapter.notifyDataSetChanged(); // Notify adapter of data change
+                    propertyAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> Toast.makeText(home.this, "Failed to load properties", Toast.LENGTH_SHORT).show());
     }
