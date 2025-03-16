@@ -57,4 +57,5 @@
     <string name="find_address_in_maps">Find address in Maps</string>
     <string name="insert_address">Insert address</string>
     <string name="search">Search</string>
+    <string name="properties">Properties:</string>
 </resources>
