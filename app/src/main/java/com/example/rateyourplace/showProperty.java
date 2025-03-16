@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -14,12 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,10 @@ public class showProperty extends AppCompatActivity {
     private TextView address;
     private RatingBar location, conditions, safety, landlord;
     private String propertyId; // Global variable to store the property ID
+
+    private ListView listView;
+    private ReviewAdapter reviewAdapter;
+    private List<Review> reviewList = new ArrayList<>();
 
     @Override
     protected void onResume() {
@@ -57,6 +61,10 @@ public class showProperty extends AppCompatActivity {
         conditions = findViewById(R.id.ratingConditions);
         safety = findViewById(R.id.ratingSafety);
         landlord = findViewById(R.id.ratingLandlord);
+
+        listView = findViewById(R.id.listview);
+        reviewAdapter = new ReviewAdapter(this, reviewList);
+        listView.setAdapter(reviewAdapter);
 
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(-1);
@@ -117,24 +125,30 @@ public class showProperty extends AppCompatActivity {
                             safety.setRating(property.getSafety());
                             landlord.setRating(property.getLandlord());
 
-                            // Handle images
-                            List<String> imageUris = property.getImageUris();
-                            List<Uri> uris = new ArrayList<>();
-                            if (imageUris != null && !imageUris.isEmpty()) {
-                                for (String uriString : imageUris) {
-                                    uris.add(Uri.parse(uriString));
-                                }
-                            } else {
-                                uris.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_placeholder));
-                            }
-
-                            RecyclerView recyclerView = findViewById(R.id.recyclerViewImages);
-                            ImageAdapter imageAdapter = new ImageAdapter(showProperty.this, uris);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(showProperty.this, LinearLayoutManager.HORIZONTAL, false));
-                            recyclerView.setAdapter(imageAdapter);
+                            // Fetch reviews after setting propertyId
+                            fetchReviews();
                         }
                     }
                 })
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching property", e));
     }
+
+    private void fetchReviews() {
+        if (propertyId == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("properties").document(propertyId)  // Reference the property document
+                .collection("reviews")  // Query its subcollection
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    reviewList.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Review review = document.toObject(Review.class);
+                        reviewList.add(review);
+                    }
+                    reviewAdapter.notifyDataSetChanged(); // Refresh ListView
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching reviews", e));
+    }
+
 }

@@ -6,13 +6,15 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/adress"
+        android:id="@+id/userEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
-        android:text="address"
-        android:textAlignment="center"
-        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_medium"
+        android:text="username"
+        android:textAlignment="textStart"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/pink"
         android:textSize="18sp" />
 
     <RatingBar
@@ -20,10 +22,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:isIndicator="true"
         android:numStars="5"
         android:rating="0"
         android:scaleX="0.7"
         android:scaleY="0.7" />
 
+    <EditText
+        android:id="@+id/comments"
+        android:layout_width="340dp"
+        android:layout_height="65dp"
+        android:ems="10"
+        android:layout_gravity="center"
+        android:inputType="textMultiLine" />
 
 </LinearLayout>
