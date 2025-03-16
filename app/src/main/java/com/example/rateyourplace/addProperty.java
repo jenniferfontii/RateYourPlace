@@ -3,8 +3,11 @@ package com.example.rateyourplace;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -20,10 +23,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,23 +38,16 @@ public class addProperty extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
-    private ArrayList<Uri> imageUris = new ArrayList<>();
+    private ArrayList<Uri> imageUris = new ArrayList<>();  // This will store URIs temporarily
 
     private EditText addressET, comments;
     private RatingBar ratingLocation, ratingConditions, ratingSafety, ratingLandlord;
     private Button selectImagesBtn, submitBtn, addressFinderBtn;
-    private BottomNavigationView navBar;
     private ImageButton back;
     private LinearLayout rootLayout;
     private double selectedLat = 0.0;
     private double selectedLon = 0.0;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(0);
-    }
+    private BottomNavigationView navBar;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -66,11 +64,10 @@ public class addProperty extends AppCompatActivity {
         ratingLandlord = findViewById(R.id.ratingLandlord);
         selectImagesBtn = findViewById(R.id.addImage);
         submitBtn = findViewById(R.id.submitBtn);
+        back = findViewById(R.id.back);
+        addressFinderBtn = findViewById(R.id.openAddressFinder);
         navBar = findViewById(R.id.bottom_navigation);
         rootLayout = findViewById(R.id.linear);
-        back = findViewById(R.id.back);
-        addressFinderBtn =findViewById(R.id.openAddressFinder);
-
 
         imageAdapter = new ImageAdapter(this, imageUris);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -79,14 +76,23 @@ public class addProperty extends AppCompatActivity {
         selectImagesBtn.setOnClickListener(v -> openImagePicker());
 
         submitBtn.setOnClickListener(v -> {
-            savePropertyToFirestore();
+            savePropertyToFirebase();  // Save the property to Firebase with image URIs
             Intent intent = new Intent(addProperty.this, home.class);
             startActivity(intent);
-            Toast.makeText(this, "Property added succesfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Property added successfully", Toast.LENGTH_SHORT).show();
         });
 
         back.setOnClickListener(view -> {
             finish();
+        });
+
+        addressFinderBtn.setOnClickListener(view -> {
+            findAddress dialog = new findAddress((address, latitude, longitude) -> {
+                addressET.setText(address);
+                selectedLat = latitude;
+                selectedLon = longitude;
+            });
+            dialog.show(getSupportFragmentManager(), "FindAddressDialog");
         });
 
         navBar.setOnItemSelectedListener(item -> {
@@ -126,17 +132,6 @@ public class addProperty extends AppCompatActivity {
             }
             return false;
         });
-
-        addressFinderBtn.setOnClickListener(view -> {
-                findAddress dialog = new findAddress((address, latitude, longitude) -> {
-                // Set the selected address and coordinates
-                addressET.setText(address);
-                selectedLat = latitude;
-                selectedLon = longitude;
-            });
-            dialog.show(getSupportFragmentManager(), "FindAddressDialog");
-        });
-
     }
 
     // Image picker launcher
@@ -179,8 +174,8 @@ public class addProperty extends AppCompatActivity {
         imagePickerLauncher.launch(Intent.createChooser(intent, "Select Images"));
     }
 
-    // Save property details to Firestore
-    private void savePropertyToFirestore() {
+    // Save property details to Firebase (with image URIs)
+    private void savePropertyToFirebase() {
         String address = this.addressET.getText().toString().trim();
         String comments = this.comments.getText().toString().trim();
         int locationRating = (int) ratingLocation.getRating();
@@ -204,16 +199,48 @@ public class addProperty extends AppCompatActivity {
         property.put("latitude", selectedLat);
         property.put("longitude", selectedLon);
 
-        // Convert URIs to Strings to store in Firestore
+        // Save URIs of images instead of base64
         List<String> imageUrisList = new ArrayList<>();
         for (Uri uri : imageUris) {
-            imageUrisList.add(uri.toString());
+            Uri savedUri = saveImageLocally(uri);
+            if (savedUri != null) {
+                imageUrisList.add(savedUri.toString());  // Save the URI (path) of the local image
+            }
         }
-        property.put("imageUris", imageUrisList);
+        property.put("imageUris", imageUrisList);  // Save the list of URIs
 
         db.collection("properties").document(address)
                 .set(property)
                 .addOnSuccessListener(aVoid -> Toast.makeText(this, "Property saved!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Error saving property", Toast.LENGTH_SHORT).show());
+    }
+
+    // Save image locally
+    private Uri saveImageLocally(Uri imageUri) {
+        try {
+            // Get input stream from the image URI
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            // Create a file to save the image
+            File directory = new File(getExternalFilesDir(null), "property_images");
+            if (!directory.exists()) {
+                directory.mkdirs();  // Create the directory if it doesn't exist
+            }
+
+            String fileName = "image_" + System.currentTimeMillis() + ".png";  // Use timestamp to make the file name unique
+            File imageFile = new File(directory, fileName);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);  // Save as PNG (or JPEG)
+            outputStream.flush();
+            outputStream.close();
+
+            // Return the URI of the saved file
+            return Uri.fromFile(imageFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

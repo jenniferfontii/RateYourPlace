@@ -103,7 +103,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
     private void handleSaveProperty(Property property, ImageButton btnSave) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
-            Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please, login to save a property", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -141,7 +141,9 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
     }
 
     private void loadImageUsingPicasso(String imageUrl, final ImageView ivPropertyImage) {
-        if (imageUrl.startsWith("content://")) {
+        Log.d("ImageLoader", "Loading image from URI: " + imageUrl);
+
+        if (imageUrl.startsWith("file://")) {
             try {
                 Uri uri = Uri.parse(imageUrl);
                 Picasso.get()
@@ -150,7 +152,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
                         .error(R.drawable.ic_placeholder)
                         .into(ivPropertyImage);
             } catch (Exception e) {
-                Log.e("ImageLoader", "Error loading image from content URI: " + e.getMessage());
+                Log.e("ImageLoader", "Error loading image from file URI: " + e.getMessage());
                 ivPropertyImage.setImageResource(R.drawable.ic_placeholder);
             }
         } else {
@@ -161,4 +163,5 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
                     .into(ivPropertyImage);
         }
     }
+
 }
