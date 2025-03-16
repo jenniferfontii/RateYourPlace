@@ -55,10 +55,11 @@
                 android:id="@+id/twAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_margin="10dp"
+                android:gravity="start"
                 android:text="Address 1234, NG1 1 AA"
                 android:textSize="20sp"
-                android:textColor="@color/darkBlue"
+                android:textColor="@color/pink"
                 android:fontFamily="@font/poppins_bold"/>
 
             <androidx.recyclerview.widget.RecyclerView
