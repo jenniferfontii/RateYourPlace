@@ -1,28 +1,187 @@
 package com.example.rateyourplace;
 
+import static android.app.Activity.RESULT_OK;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class leaveReview extends DialogFragment {
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private ArrayList<Uri> imageUris = new ArrayList<>();
+    private RatingBar location, conditions, landlord, safety;
+    private EditText comments;
+    private Button addPics;
+    private RecyclerView recyclerView;
+    private ImageAdapter imageAdapter;
+    private String propertyId; // Property ID
+
+    public static leaveReview newInstance(String propertyId) {
+        leaveReview fragment = new leaveReview();
+        Bundle args = new Bundle();
+        args.putString("propertyId", propertyId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            propertyId = getArguments().getString("propertyId");
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_leave_review, null);
+        location = view.findViewById(R.id.ratingLocation);
+        conditions = view.findViewById(R.id.ratingConditions);
+        landlord = view.findViewById(R.id.ratingLandlord);
+        safety = view.findViewById(R.id.ratingSafety);
+        comments = view.findViewById(R.id.comments);
+        addPics = view.findViewById(R.id.addPics);
+        recyclerView = view.findViewById(R.id.recyclerViewImages);
+
+        addPics.setOnClickListener(view1 -> openImagePicker());
+
+        imageAdapter = new ImageAdapter(getActivity(), imageUris);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(imageAdapter);
 
         builder.setView(view)
-                .setTitle("Leave a review")
-                .setPositiveButton("Save", (dialog, id) -> dismiss())
+                .setTitle("Leave a Review")
+                .setPositiveButton("Save", (dialog, id) -> saveReviewToFirebase())
                 .setNegativeButton("Cancel", (dialog, id) -> dismiss());
+
         return builder.create();
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        imagePickerLauncher.launch(Intent.createChooser(intent, "Select Images"));
+    }
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+
+                    if (data.getClipData() != null) {
+                        int count = data.getClipData().getItemCount();
+                        for (int i = 0; i < count; i++) {
+                            ClipData.Item item = data.getClipData().getItemAt(i);
+                            if (item != null && item.getUri() != null) {
+                                imageUris.add(item.getUri());
+                            }
+                        }
+                    } else if (data.getData() != null) {
+                        imageUris.add(data.getData());
+                    }
+
+                    imageAdapter.notifyDataSetChanged();
+                }
+            }
+    );
+
+    private Uri saveImageLocally(Uri imageUri) {
+        try {
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+            if (inputStream == null) return null;
+
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            File directory = requireContext().getExternalFilesDir(null);
+            if (directory == null) {
+                Toast.makeText(getActivity(), "Storage not available", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            directory = new File(directory, "property_images");
+            if (!directory.exists()) directory.mkdirs();
+
+            String fileName = "image_" + System.currentTimeMillis() + ".png";
+            File imageFile = new File(directory, fileName);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            return Uri.fromFile(imageFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void saveReviewToFirebase() {
+        if (user != null && propertyId != null) {
+            String reviewId = UUID.randomUUID().toString();
+
+            float ratingLocation = location.getRating();
+            float ratingConditions = conditions.getRating();
+            float ratingSafety = safety.getRating();
+            float ratingLandlord = landlord.getRating();
+            String comment = comments.getText().toString();
+
+            Map<String, Object> review = new HashMap<>();
+            review.put("userId", user.getUid());
+            review.put("ratingLocation", ratingLocation);
+            review.put("ratingConditions", ratingConditions);
+            review.put("ratingSafety", ratingSafety);
+            review.put("ratingLandlord", ratingLandlord);
+            review.put("comment", comment);
+            review.put("timestamp", System.currentTimeMillis());
+
+            List<String> imageUrisList = new ArrayList<>();
+            for (Uri uri : imageUris) {
+                Uri savedUri = saveImageLocally(uri);
+                if (savedUri != null) {
+                    imageUrisList.add(savedUri.toString());
+                }
+            }
+            review.put("imageUris", imageUrisList);
+
+            db.collection("properties").document(propertyId)
+                    .collection("reviews").document(reviewId)
+                    .set(review)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Review Added", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to add the review", Toast.LENGTH_SHORT).show());
+        }
     }
 }

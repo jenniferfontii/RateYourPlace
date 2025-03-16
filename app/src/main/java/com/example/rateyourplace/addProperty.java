@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,7 +37,7 @@ public class addProperty extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
-    private ArrayList<Uri> imageUris = new ArrayList<>();  // This will store URIs temporarily
+    private ArrayList<Uri> imageUris = new ArrayList<>();
 
     private EditText addressET, comments;
     private RatingBar ratingLocation, ratingConditions, ratingSafety, ratingLandlord;
@@ -199,15 +198,14 @@ public class addProperty extends AppCompatActivity {
         property.put("latitude", selectedLat);
         property.put("longitude", selectedLon);
 
-        // Save URIs of images instead of base64
         List<String> imageUrisList = new ArrayList<>();
         for (Uri uri : imageUris) {
             Uri savedUri = saveImageLocally(uri);
             if (savedUri != null) {
-                imageUrisList.add(savedUri.toString());  // Save the URI (path) of the local image
+                imageUrisList.add(savedUri.toString());
             }
         }
-        property.put("imageUris", imageUrisList);  // Save the list of URIs
+        property.put("imageUris", imageUrisList);
 
         db.collection("properties").document(address)
                 .set(property)

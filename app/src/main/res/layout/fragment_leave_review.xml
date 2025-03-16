@@ -100,7 +100,7 @@
         android:labelFor="@+id/editTextTextMultiLine"/>
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/comments"
         android:layout_width="340dp"
         android:layout_height="65dp"
         android:ems="10"
@@ -110,12 +110,19 @@
         tools:ignore="Autofill" />
 
     <Button
-        android:id="@+id/submitBtn2"
+        android:id="@+id/addPics"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:backgroundTint="@color/darkBlue"
         android:fontFamily="@font/poppins_semibold"
         android:text="@string/add_pictures"
         android:textColor="@color/white"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewImages"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
 
 </LinearLayout>

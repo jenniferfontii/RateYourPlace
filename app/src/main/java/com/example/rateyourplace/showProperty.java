@@ -28,6 +28,7 @@ public class showProperty extends AppCompatActivity {
 
     private TextView address;
     private RatingBar location, conditions, safety, landlord;
+    private String propertyId; // Global variable to store the property ID
 
     @Override
     protected void onResume() {
@@ -77,14 +78,19 @@ public class showProperty extends AppCompatActivity {
             return false;
         });
 
+        // Load property details and set propertyId dynamically
+        findPropertyDetails(propertyAddress);
+
         addReview.setOnClickListener(view -> {
-            leaveReview dialog = new leaveReview();
-            dialog.show(getSupportFragmentManager(), "Leave a review");
+            if (propertyId != null) { // Ensure propertyId is set before opening the review dialog
+                leaveReview dialog = leaveReview.newInstance(propertyId);
+                dialog.show(getSupportFragmentManager(), "Leave a review");
+            } else {
+                Log.e("Review", "Property ID is null. Review cannot be added.");
+            }
         });
 
         back.setOnClickListener(view -> finish());
-
-        findPropertyDetails(propertyAddress);
     }
 
     private void findPropertyDetails(String pAddress) {
@@ -97,25 +103,23 @@ public class showProperty extends AppCompatActivity {
                         Property property = doc.toObject(Property.class);
 
                         if (property != null) {
-                            // Set address text
-                            address.setText(property.getAddress());
+                            // Set global propertyId
+                            propertyId = doc.getId();  // Get Firestore document ID as the propertyId
 
-                            // Set ratings
+                            // Update UI with property details
+                            address.setText(property.getAddress());
                             location.setIsIndicator(true);
                             conditions.setIsIndicator(true);
                             safety.setIsIndicator(true);
                             landlord.setIsIndicator(true);
-
                             location.setRating(property.getLocation());
                             conditions.setRating(property.getPropertyCondition());
                             safety.setRating(property.getSafety());
                             landlord.setRating(property.getLandlord());
 
-                            // Set images
-                            List<String> imageUris = property.getImageUris();  // List of image URLs
+                            // Handle images
+                            List<String> imageUris = property.getImageUris();
                             List<Uri> uris = new ArrayList<>();
-
-                            // Convert Strings to Uris, add placeholder if empty
                             if (imageUris != null && !imageUris.isEmpty()) {
                                 for (String uriString : imageUris) {
                                     uris.add(Uri.parse(uriString));
@@ -124,9 +128,8 @@ public class showProperty extends AppCompatActivity {
                                 uris.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_placeholder));
                             }
 
-                            // Set the RecyclerView with the image adapter
-                            ImageAdapter imageAdapter = new ImageAdapter(showProperty.this, uris);
                             RecyclerView recyclerView = findViewById(R.id.recyclerViewImages);
+                            ImageAdapter imageAdapter = new ImageAdapter(showProperty.this, uris);
                             recyclerView.setLayoutManager(new LinearLayoutManager(showProperty.this, LinearLayoutManager.HORIZONTAL, false));
                             recyclerView.setAdapter(imageAdapter);
                         }
@@ -134,5 +137,4 @@ public class showProperty extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching property", e));
     }
-
 }
