@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +49,8 @@ public class leaveReview extends DialogFragment {
     private Button addPics;
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
-    private String propertyId; // Property ID
+    private String propertyId;
+    private String existingReviewId; // To track the existing review
 
     public static leaveReview newInstance(String propertyId) {
         leaveReview fragment = new leaveReview();
@@ -64,10 +67,16 @@ public class leaveReview extends DialogFragment {
             propertyId = getArguments().getString("propertyId");
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (user == null) {
+            Toast.makeText(getActivity(), "Login to leave a review", Toast.LENGTH_SHORT).show();
+            dismiss();
+            return new Dialog(requireContext()); // Return an empty dialog to prevent errors
+        }
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_leave_review, null);
+
         location = view.findViewById(R.id.ratingLocation);
         conditions = view.findViewById(R.id.ratingConditions);
         landlord = view.findViewById(R.id.ratingLandlord);
@@ -87,7 +96,42 @@ public class leaveReview extends DialogFragment {
                 .setPositiveButton("Save", (dialog, id) -> saveReviewToFirebase())
                 .setNegativeButton("Cancel", (dialog, id) -> dismiss());
 
+        checkExistingReview();
+
         return builder.create();
+    }
+
+    private void checkExistingReview() {
+        if (user == null || propertyId == null) return;
+
+        db.collection("properties").document(propertyId)
+                .collection("reviews")
+                .whereEqualTo("userId", user.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        existingReviewId = document.getId();
+                        loadExistingReview(document);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Error checking existing review", e));
+    }
+
+    private void loadExistingReview(DocumentSnapshot document) {
+        location.setRating(document.getDouble("ratingLocation").floatValue());
+        conditions.setRating(document.getDouble("ratingConditions").floatValue());
+        landlord.setRating(document.getDouble("ratingLandlord").floatValue());
+        safety.setRating(document.getDouble("ratingSafety").floatValue());
+        comments.setText(document.getString("comment"));
+
+        List<String> imageUrisList = (List<String>) document.get("imageUris");
+        if (imageUrisList != null) {
+            for (String uri : imageUrisList) {
+                imageUris.add(Uri.parse(uri));
+            }
+            imageAdapter.notifyDataSetChanged();
+        }
     }
 
     private void openImagePicker() {
@@ -151,7 +195,7 @@ public class leaveReview extends DialogFragment {
 
     private void saveReviewToFirebase() {
         if (user != null && propertyId != null) {
-            String reviewId = UUID.randomUUID().toString();
+            String reviewId = (existingReviewId != null) ? existingReviewId : UUID.randomUUID().toString();
 
             float ratingLocation = location.getRating();
             float ratingConditions = conditions.getRating();
@@ -161,7 +205,7 @@ public class leaveReview extends DialogFragment {
 
             Map<String, Object> review = new HashMap<>();
             review.put("userId", user.getUid());
-            review.put("userEmail",user.getEmail());
+            review.put("userEmail", user.getEmail());
             review.put("ratingLocation", ratingLocation);
             review.put("ratingConditions", ratingConditions);
             review.put("ratingSafety", ratingSafety);
@@ -181,8 +225,8 @@ public class leaveReview extends DialogFragment {
             db.collection("properties").document(propertyId)
                     .collection("reviews").document(reviewId)
                     .set(review)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Review Added", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to add the review", Toast.LENGTH_SHORT).show());
+                    .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Review Saved", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to save review", Toast.LENGTH_SHORT).show());
         }
     }
 }

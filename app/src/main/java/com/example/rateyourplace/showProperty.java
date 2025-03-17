@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -90,11 +93,13 @@ public class showProperty extends AppCompatActivity {
         findPropertyDetails(propertyAddress);
 
         addReview.setOnClickListener(view -> {
-            if (propertyId != null) { // Ensure propertyId is set before opening the review dialog
-                leaveReview dialog = leaveReview.newInstance(propertyId);
-                dialog.show(getSupportFragmentManager(), "Leave a review");
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (user == null) {
+                Toast.makeText(showProperty.this, "Login to leave a review", Toast.LENGTH_SHORT).show();
             } else {
-                Log.e("Review", "Property ID is null. Review cannot be added.");
+                leaveReview reviewDialog = leaveReview.newInstance(propertyId);
+                reviewDialog.show(getSupportFragmentManager(), "LeaveReviewDialog");
             }
         });
 
