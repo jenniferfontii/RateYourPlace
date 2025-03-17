@@ -3,6 +3,7 @@ package com.example.rateyourplace;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
+import androidx.appcompat.widget.SearchView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -49,6 +51,27 @@ public class home extends AppCompatActivity {
         ImageButton mapView = findViewById(R.id.searchMap);
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_search);
+        SearchView searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                navBar.setVisibility(View.GONE);
+            } else {
+                navBar.setVisibility(View.VISIBLE);
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchProperties(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                searchProperties(query);
+                return true;
+            }
+        });
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -97,6 +120,33 @@ public class home extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(home.this, "Failed to load properties", Toast.LENGTH_SHORT).show());
     }
 
+    private void searchProperties(String query) {
+        db.collection("properties")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    propertyList.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String address = document.getString("address");
+
+                        if (address != null && address.toLowerCase().contains(query.toLowerCase())) {
+                            int location = document.contains("location") ? document.getLong("location").intValue() : 0;
+                            int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
+                            int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
+                            int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
+
+                            List<String> imageUris = (List<String>) document.get("imageUris");
+                            if (imageUris == null) {
+                                imageUris = new ArrayList<>();
+                            }
+
+                            Property property = new Property(address, imageUris, location, propertyCondition, safety, landlord);
+                            propertyList.add(property);
+                        }
+                    }
+                    propertyAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> Toast.makeText(home.this, "Search failed", Toast.LENGTH_SHORT).show());
+    }
 
 
 
