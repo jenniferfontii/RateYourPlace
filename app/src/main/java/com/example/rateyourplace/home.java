@@ -62,13 +62,14 @@ public class home extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchProperties(query);  // 🔹 Perform search when user presses Enter
+                searchProperties(query);
                 return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false; // No real-time filtering, only search on Enter
+            public boolean onQueryTextChange(String query) {
+                searchProperties(query);
+                return true;
             }
         });
 
