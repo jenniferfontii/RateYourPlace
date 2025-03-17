@@ -61,6 +61,14 @@ public class showReview extends DialogFragment {
         comments = view.findViewById(R.id.comments);
         recyclerView = view.findViewById(R.id.recyclerViewImages);
 
+        location.setIsIndicator(true);
+        conditions.setIsIndicator(true);
+        landlord.setIsIndicator(true);
+        safety.setIsIndicator(true);
+        comments.setClickable(false);
+        comments.setFocusable(false);
+        comments.setBackground(null);
+
         // Setup RecyclerView
         imageAdapter = new ImageAdapter(getActivity(), imageUris);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));

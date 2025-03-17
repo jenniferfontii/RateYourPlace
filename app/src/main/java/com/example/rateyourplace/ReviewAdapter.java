@@ -23,11 +23,12 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private Context context;
-    //private String reviewId;
+    private String caller;
 
-    public ReviewAdapter(Context context, List<Review> reviews) {
+    public ReviewAdapter(Context context, List<Review> reviews, String caller) {
         super(context, 0, reviews);
         this.context = context;
+        this.caller = caller;
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
     }
@@ -50,26 +51,37 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
 
         if (review != null) {
 
-            if(review.getUserEmail().isEmpty() || review.getUserEmail() == null){
-                userEmail.setText("Unknown User");
-            } else {
-                userEmail.setText(review.getUserEmail());
+            if("showProperty".equals(caller)){
+                if(review.getUserEmail().isEmpty() || review.getUserEmail() == null){
+                    userEmail.setText("Unknown User");
+                } else {
+                    userEmail.setText(review.getUserEmail());
+                }
+            }else{
+                userEmail.setText(review.getPropertyId());
             }
-
             ratingBar.setRating(review.getAverageRating());
             comments.setText(review.getComment());
-            //reviewId = review.getReviewId();
         }
+
 
         convertView.setOnClickListener(v -> {
             String reviewId = review.getReviewId();
-            if (review != null) {
+            if("showProperty".equals(caller)) {
                 showReview reviewDialog = showReview.newInstance(reviewId);
                 if (context instanceof showProperty) {
                     showProperty showProp = (showProperty) context;
                     reviewDialog.show(showProp.getSupportFragmentManager(), "showReview");
                 }
             }
+            if("pastReviews".equals(caller)){
+                leaveReview reviewDialog = leaveReview.newInstance(reviewId);
+                if (context instanceof pastReviews) {
+                    pastReviews pReviews = (pastReviews) context;
+                    reviewDialog.show(pReviews.getSupportFragmentManager(), "editReview");
+                }
+            }
+
         });
 
         return convertView;

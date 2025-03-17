@@ -31,7 +31,7 @@ public class showProperty extends AppCompatActivity {
 
     private TextView address;
     private RatingBar location, conditions, safety, landlord;
-    private String propertyId; // Global variable to store the property ID
+    private String propertyId;
 
     private ListView listView;
     private ReviewAdapter reviewAdapter;
@@ -66,7 +66,7 @@ public class showProperty extends AppCompatActivity {
         landlord = findViewById(R.id.ratingLandlord);
 
         listView = findViewById(R.id.listview);
-        reviewAdapter = new ReviewAdapter(this, reviewList);
+        reviewAdapter = new ReviewAdapter(this, reviewList,"showProperty");
         listView.setAdapter(reviewAdapter);
 
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
