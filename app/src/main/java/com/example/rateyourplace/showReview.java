@@ -53,13 +53,20 @@ public class showReview extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_show_review, null);
 
-        // Initialize UI elements
         location = view.findViewById(R.id.ratingLocation);
         conditions = view.findViewById(R.id.ratingConditions);
         landlord = view.findViewById(R.id.ratingLandlord);
         safety = view.findViewById(R.id.ratingSafety);
         comments = view.findViewById(R.id.comments);
         recyclerView = view.findViewById(R.id.recyclerViewImages);
+
+        location.setIsIndicator(true);
+        conditions.setIsIndicator(true);
+        landlord.setIsIndicator(true);
+        safety.setIsIndicator(true);
+        comments.setClickable(false);
+        comments.setFocusable(false);
+        comments.setBackground(null);
 
         // Setup RecyclerView
         imageAdapter = new ImageAdapter(getActivity(), imageUris);
@@ -106,11 +113,16 @@ public class showReview extends DialogFragment {
     }
 
     private void loadImagesFromLocalStorage(List<String> imagePaths) {
-        imageUris.clear(); // Clear any existing images
+        imageUris.clear();
         for (String imagePath : imagePaths) {
-            Uri imageUri = Uri.fromFile(new File(imagePath)); // Load images from local storage
-            imageUris.add(imageUri);
+            File imageFile = new File(requireContext().getExternalFilesDir(null), "property_images/" + new File(imagePath).getName());
+            if (imageFile.exists()) {
+                imageUris.add(Uri.fromFile(imageFile));
+            } else {
+                Log.e("showReview", "Image file not found: " + imageFile.getAbsolutePath());
+            }
         }
-        imageAdapter.notifyDataSetChanged(); // Notify adapter that data has changed
+        imageAdapter.notifyDataSetChanged();
     }
+
 }

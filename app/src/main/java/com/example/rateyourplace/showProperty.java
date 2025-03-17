@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +33,7 @@ public class showProperty extends AppCompatActivity {
 
     private TextView address;
     private RatingBar location, conditions, safety, landlord;
-    private String propertyId; // Global variable to store the property ID
+    private String propertyId;
 
     private ListView listView;
     private ReviewAdapter reviewAdapter;
@@ -66,7 +68,7 @@ public class showProperty extends AppCompatActivity {
         landlord = findViewById(R.id.ratingLandlord);
 
         listView = findViewById(R.id.listview);
-        reviewAdapter = new ReviewAdapter(this, reviewList);
+        reviewAdapter = new ReviewAdapter(this, reviewList,"showProperty");
         listView.setAdapter(reviewAdapter);
 
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
@@ -89,7 +91,6 @@ public class showProperty extends AppCompatActivity {
             return false;
         });
 
-        // Load property details and set propertyId dynamically
         findPropertyDetails(propertyAddress);
 
         addReview.setOnClickListener(view -> {
@@ -116,10 +117,8 @@ public class showProperty extends AppCompatActivity {
                         Property property = doc.toObject(Property.class);
 
                         if (property != null) {
-                            // Set global propertyId
-                            propertyId = doc.getId();  // Get Firestore document ID as the propertyId
+                            propertyId = doc.getId();
 
-                            // Update UI with property details
                             address.setText(property.getAddress());
                             location.setIsIndicator(true);
                             conditions.setIsIndicator(true);
@@ -130,13 +129,36 @@ public class showProperty extends AppCompatActivity {
                             safety.setRating(property.getSafety());
                             landlord.setRating(property.getLandlord());
 
-                            // Fetch reviews after setting propertyId
+                            List<String> imageUrls = (List<String>) doc.get("imageUris");
+                            if (imageUrls != null && !imageUrls.isEmpty()) {
+                                Log.d("showProperty", "Retrieved images: " + imageUrls);
+                                loadPropertyImages(imageUrls);
+                            } else {
+                                Log.d("showProperty", "No images found for this property.");
+                            }
+
                             fetchReviews();
                         }
                     }
                 })
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching property", e));
     }
+
+    private void loadPropertyImages(List<String> imageUrls) {
+        RecyclerView imageRecyclerView = findViewById(R.id.recyclerViewImages);
+        imageRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        // Convert Strings to Uri
+        List<Uri> imageUris = new ArrayList<>();
+        for (String url : imageUrls) {
+            imageUris.add(Uri.parse(url));
+        }
+
+        ImageAdapter imageAdapter = new ImageAdapter(this, imageUris);
+        imageRecyclerView.setAdapter(imageAdapter);
+    }
+
+
 
     private void fetchReviews() {
         if (propertyId == null) return;
