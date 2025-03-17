@@ -104,9 +104,9 @@ public class leaveReview extends DialogFragment {
     private void checkExistingReview() {
         if (user == null || propertyId == null) return;
 
-        db.collection("properties").document(propertyId)
-                .collection("reviews")
+        db.collection("reviews")
                 .whereEqualTo("userId", user.getUid())
+                .whereEqualTo("propertyId", propertyId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -204,6 +204,7 @@ public class leaveReview extends DialogFragment {
             String comment = comments.getText().toString();
 
             Map<String, Object> review = new HashMap<>();
+            review.put("propertyId", propertyId);
             review.put("userId", user.getUid());
             review.put("userEmail", user.getEmail());
             review.put("ratingLocation", ratingLocation);
@@ -222,8 +223,7 @@ public class leaveReview extends DialogFragment {
             }
             review.put("imageUris", imageUrisList);
 
-            db.collection("properties").document(propertyId)
-                    .collection("reviews").document(reviewId)
+            db.collection("reviews").document(reviewId)
                     .set(review)
                     .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Review Saved", Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to save review", Toast.LENGTH_SHORT).show());

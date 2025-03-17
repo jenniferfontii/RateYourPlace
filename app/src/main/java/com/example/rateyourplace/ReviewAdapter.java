@@ -22,9 +22,12 @@ import java.util.List;
 public class ReviewAdapter extends ArrayAdapter<Review> {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private Context context;
+    //private String reviewId;
 
     public ReviewAdapter(Context context, List<Review> reviews) {
         super(context, 0, reviews);
+        this.context = context;
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
     }
@@ -49,15 +52,26 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
 
             if(review.getUserEmail().isEmpty() || review.getUserEmail() == null){
                 userEmail.setText("Unknown User");
-            }else{
+            } else {
                 userEmail.setText(review.getUserEmail());
             }
 
             ratingBar.setRating(review.getAverageRating());
             comments.setText(review.getComment());
+            //reviewId = review.getReviewId();
         }
+
+        convertView.setOnClickListener(v -> {
+            String reviewId = review.getReviewId();
+            if (review != null) {
+                showReview reviewDialog = showReview.newInstance(reviewId);
+                if (context instanceof showProperty) {
+                    showProperty showProp = (showProperty) context;
+                    reviewDialog.show(showProp.getSupportFragmentManager(), "showReview");
+                }
+            }
+        });
 
         return convertView;
     }
-
 }

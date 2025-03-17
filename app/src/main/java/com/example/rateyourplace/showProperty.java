@@ -140,20 +140,40 @@ public class showProperty extends AppCompatActivity {
 
     private void fetchReviews() {
         if (propertyId == null) return;
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("properties").document(propertyId)  // Reference the property document
-                .collection("reviews")  // Query its subcollection
+
+        db.collection("reviews")
+                .whereEqualTo("propertyId", propertyId.trim())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    reviewList.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Review review = document.toObject(Review.class);
-                        reviewList.add(review);
-                    }
-                    reviewAdapter.notifyDataSetChanged(); // Refresh ListView
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching reviews", e));
-    }
+                    try {
+                        Log.d("ciccio", "NUOVO: Query success, found: " + queryDocumentSnapshots.size() + " reviews.");
 
+                        reviewList.clear();
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Log.d("ciccio", "Document data: " + document.getData()); // ✅ Log raw document data
+                            Review review = document.toObject(Review.class);
+                            if (review != null) {
+                                review.setReviewId(document.getId());
+                                reviewList.add(review);
+                            } else {
+                                Log.w("ciccio", "Review is null for document: " + document.getId());
+                            }
+                        }
+
+                        if (reviewAdapter != null) {
+                            reviewAdapter.notifyDataSetChanged();
+                            Log.d("ciccio", "Adapter notified.");
+                        } else {
+                            Log.e("ciccio", "reviewAdapter is NULL!");
+                        }
+                    } catch (Exception e) {
+                        Log.e("ciccio", "Exception inside onSuccess: ", e);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ciccio", "Error fetching reviews", e);
+                });
+    }
 }
+

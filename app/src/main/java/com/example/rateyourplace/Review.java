@@ -14,6 +14,14 @@ public class Review {
     private int ratingLocation;
     private String comment;
     private String userId;
+    private String reviewId;
+
+    public String getReviewId() {
+        return reviewId;
+    }
+    public void setReviewId(String reviewId) {
+        this.reviewId =reviewId;
+    }
 
     public String getUserEmail() {
         return userEmail;
@@ -97,7 +105,7 @@ public class Review {
 
     }
 
-    public Review(String propertyId, List<String> imageUris, int ratingLandlord, int ratingConditions, int ratingSafety, int ratingLocation, String userId, String comments, String userEmail){
+    public Review(String propertyId, List<String> imageUris, int ratingLandlord, int ratingConditions, int ratingSafety, int ratingLocation, String userId, String comments, String reviewId, String userEmail){
         this.propertyId = propertyId;
         this.imageUris = imageUris;
         this.ratingLandlord = ratingLandlord;
@@ -106,6 +114,7 @@ public class Review {
         this.ratingLocation = ratingLocation;
         this.userId = userId;
         this.comment = comments;
+        this.reviewId = reviewId;
         this.userEmail = userEmail;
     }
     public float getAverageRating() {
