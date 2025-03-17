@@ -147,32 +147,25 @@ public class showProperty extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     try {
-                        Log.d("ciccio", "NUOVO: Query success, found: " + queryDocumentSnapshots.size() + " reviews.");
 
                         reviewList.clear();
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Log.d("ciccio", "Document data: " + document.getData()); // ✅ Log raw document data
                             Review review = document.toObject(Review.class);
                             if (review != null) {
                                 review.setReviewId(document.getId());
                                 reviewList.add(review);
                             } else {
-                                Log.w("ciccio", "Review is null for document: " + document.getId());
+                                Log.w("debugJ", "Review is null for document: " + document.getId());
                             }
                         }
+                        reviewAdapter.notifyDataSetChanged();
 
-                        if (reviewAdapter != null) {
-                            reviewAdapter.notifyDataSetChanged();
-                            Log.d("ciccio", "Adapter notified.");
-                        } else {
-                            Log.e("ciccio", "reviewAdapter is NULL!");
-                        }
                     } catch (Exception e) {
-                        Log.e("ciccio", "Exception inside onSuccess: ", e);
+                        Log.e("debugJ", "Exception inside onSuccess: ", e);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("ciccio", "Error fetching reviews", e);
+                    Log.e("debugJ", "Error fetching reviews", e);
                 });
     }
 }
