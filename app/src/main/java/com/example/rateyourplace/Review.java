@@ -15,6 +15,16 @@ public class Review {
     private String comment;
     private String userId;
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    private String userEmail;
+
     public String getComment() {
         return comment;
     }
@@ -87,7 +97,7 @@ public class Review {
 
     }
 
-    public Review(String propertyId, List<String> imageUris, int ratingLandlord, int ratingConditions, int ratingSafety, int ratingLocation, String userId, String comments){
+    public Review(String propertyId, List<String> imageUris, int ratingLandlord, int ratingConditions, int ratingSafety, int ratingLocation, String userId, String comments, String userEmail){
         this.propertyId = propertyId;
         this.imageUris = imageUris;
         this.ratingLandlord = ratingLandlord;
@@ -96,29 +106,10 @@ public class Review {
         this.ratingLocation = ratingLocation;
         this.userId = userId;
         this.comment = comments;
+        this.userEmail = userEmail;
     }
     public float getAverageRating() {
         return (ratingLandlord + ratingConditions + ratingSafety + ratingLocation) / 4.0f;
-    }
-
-    public void fetchUserEmail(UserEmailCallback callback) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(userId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String email = documentSnapshot.getString("email");
-                        callback.onUserEmailFetched(email);
-                    } else {
-                        callback.onUserEmailFetched(null);
-                    }
-                })
-                .addOnFailureListener(e -> callback.onUserEmailFetched(null));
-    }
-
-    // Callback interface to return the email asynchronously
-    public interface UserEmailCallback {
-        void onUserEmailFetched(String email);
     }
 
 }

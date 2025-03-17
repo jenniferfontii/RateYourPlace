@@ -46,13 +46,13 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
         comments.setBackground(null);
 
         if (review != null) {
-            review.fetchUserEmail(email -> {
-                if (email != null) {
-                    userEmail.setText(email);
-                } else {
-                    userEmail.setText("Unknown User");
-                }
-            });
+
+            if(review.getUserEmail().isEmpty() || review.getUserEmail() == null){
+                userEmail.setText("Unknown User");
+            }else{
+                userEmail.setText(review.getUserEmail());
+            }
+
             ratingBar.setRating(review.getAverageRating());
             comments.setText(review.getComment());
         }

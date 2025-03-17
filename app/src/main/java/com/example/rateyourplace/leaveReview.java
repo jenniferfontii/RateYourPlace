@@ -161,6 +161,7 @@ public class leaveReview extends DialogFragment {
 
             Map<String, Object> review = new HashMap<>();
             review.put("userId", user.getUid());
+            review.put("userEmail",user.getEmail());
             review.put("ratingLocation", ratingLocation);
             review.put("ratingConditions", ratingConditions);
             review.put("ratingSafety", ratingSafety);
