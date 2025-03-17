@@ -89,7 +89,6 @@ public class showProperty extends AppCompatActivity {
             return false;
         });
 
-        // Load property details and set propertyId dynamically
         findPropertyDetails(propertyAddress);
 
         addReview.setOnClickListener(view -> {

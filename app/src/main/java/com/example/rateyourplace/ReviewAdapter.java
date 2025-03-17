@@ -75,7 +75,7 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
                 }
             }
             if("pastReviews".equals(caller)){
-                leaveReview reviewDialog = leaveReview.newInstance(reviewId);
+                leaveReview reviewDialog = leaveReview.newInstance(review.getPropertyId());
                 if (context instanceof pastReviews) {
                     pastReviews pReviews = (pastReviews) context;
                     reviewDialog.show(pReviews.getSupportFragmentManager(), "editReview");

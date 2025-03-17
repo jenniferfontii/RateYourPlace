@@ -53,7 +53,6 @@ public class showReview extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_show_review, null);
 
-        // Initialize UI elements
         location = view.findViewById(R.id.ratingLocation);
         conditions = view.findViewById(R.id.ratingConditions);
         landlord = view.findViewById(R.id.ratingLandlord);
@@ -114,11 +113,16 @@ public class showReview extends DialogFragment {
     }
 
     private void loadImagesFromLocalStorage(List<String> imagePaths) {
-        imageUris.clear(); // Clear any existing images
+        imageUris.clear();
         for (String imagePath : imagePaths) {
-            Uri imageUri = Uri.fromFile(new File(imagePath)); // Load images from local storage
-            imageUris.add(imageUri);
+            File imageFile = new File(requireContext().getExternalFilesDir(null), "property_images/" + new File(imagePath).getName());
+            if (imageFile.exists()) {
+                imageUris.add(Uri.fromFile(imageFile));
+            } else {
+                Log.e("showReview", "Image file not found: " + imageFile.getAbsolutePath());
+            }
         }
-        imageAdapter.notifyDataSetChanged(); // Notify adapter that data has changed
+        imageAdapter.notifyDataSetChanged();
     }
+
 }
