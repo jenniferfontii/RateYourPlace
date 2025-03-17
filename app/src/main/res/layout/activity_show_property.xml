@@ -19,55 +19,31 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Back & Map Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageButton
-                    android:id="@+id/back"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    app:srcCompat="@drawable/ic_back_button"
-                    android:contentDescription="@string/back_button"/>
-
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="46dp"
-                    android:background="@drawable/searchview_border"
-                    android:iconifiedByDefault="false" />
-
-                <ImageButton
-                    android:id="@+id/btnMap"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:src="@drawable/ic_map"
-                    android:contentDescription="@string/map_button"/>
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_back_button"
+                android:contentDescription="@string/back_button"/>
 
             <TextView
-                android:id="@+id/twAddress2"
+                android:id="@+id/twAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_margin="10dp"
+                android:gravity="start"
                 android:text="Address 1234, NG1 1 AA"
                 android:textSize="20sp"
-                android:textColor="@color/darkBlue"
+                android:textColor="@color/pink"
                 android:fontFamily="@font/poppins_bold"/>
 
-            <ImageView
-                android:id="@+id/ivMainImage"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewImages"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:background="@drawable/ic_placeholder"
-                android:contentDescription="@string/main_property_image"/>
+                android:layout_height="110dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <TextView
                 android:id="@+id/textView1"
@@ -153,32 +129,41 @@
                 android:scaleX="0.7"
                 android:scaleY="0.7"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addReview"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_gravity="end"
-                android:backgroundTint="@color/lightBlue"
-                android:text="@string/plus"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                app:cornerRadius="80dp"
-                app:strokeColor="@color/white"
-                app:strokeWidth="2dp"/>
-            <TextView
-                android:id="@+id/textView5"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/reviews"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_bold"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reviews"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:textColor="@color/darkBlue"
+                    android:fontFamily="@font/poppins_bold"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addReview"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="end"
+                    android:backgroundTint="@color/lightBlue"
+                    android:text="@string/plus"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    app:cornerRadius="80dp"
+                    app:strokeColor="@color/white"
+                    app:strokeWidth="2dp"/>
+
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="400dp"/>
 
         </LinearLayout>
     </ScrollView>

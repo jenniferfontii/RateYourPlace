@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:gravity="center">
 
-
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -108,15 +107,6 @@
         android:inputType="textMultiLine"
         android:layout_marginBottom="10dp"
         tools:ignore="Autofill" />
-
-    <Button
-        android:id="@+id/addPics"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/darkBlue"
-        android:fontFamily="@font/poppins_semibold"
-        android:text="@string/add_pictures"
-        android:textColor="@color/white"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewImages"
