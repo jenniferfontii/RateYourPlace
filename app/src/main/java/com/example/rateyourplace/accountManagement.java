@@ -72,7 +72,7 @@ public class accountManagement extends AppCompatActivity {
         Button signout = findViewById(R.id.signOut);
         TextView changepsw = findViewById(R.id.changePsw);
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(R.id.nav_account);
+        navBar.setSelectedItemId(0);
         ImageButton back = findViewById(R.id.back);
         EditText email = findViewById(R.id.email);
         insertPicture = findViewById(R.id.account);

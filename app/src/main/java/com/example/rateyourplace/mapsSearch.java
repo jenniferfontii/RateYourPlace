@@ -5,22 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.rateyourplace.databinding.ActivityMapsSearchBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 
 public class mapsSearch extends AppCompatActivity {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(0);
+        navBar.setItemActiveIndicatorEnabled(false);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,25 @@ public class mapsSearch extends AppCompatActivity {
         }
 
         Button listView =findViewById(R.id.listView);
+        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
+        navBar.setSelectedItemId(0);
+        navBar.setItemActiveIndicatorEnabled(false);
+
+        navBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_search) {
+                startActivity(new Intent(mapsSearch.this, home.class));
+                return true;
+            } else if (itemId == R.id.nav_saved) {
+                startActivity(new Intent(mapsSearch.this, savedProperties.class));
+                return true;
+            } else if (itemId == R.id.nav_account) {
+                startActivity(new Intent(mapsSearch.this, user.class));
+            }
+
+            return false;
+        });
 
         listView.setOnClickListener(view -> {
             Intent intent = new Intent(mapsSearch.this, home.class);
