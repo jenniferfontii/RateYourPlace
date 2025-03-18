@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,7 +57,6 @@ public class MapsFragment extends Fragment {
     private void fetchPropertiesFromFirestore() {
         db = FirebaseFirestore.getInstance();
         CollectionReference propertiesRef = db.collection("properties");
-
         propertiesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 boolean firstLocationSet = false;
@@ -67,7 +67,11 @@ public class MapsFragment extends Fragment {
 
                     if (latitude != null && longitude != null && address != null) {
                         LatLng location = new LatLng(latitude, longitude);
-                        mMap.addMarker(new MarkerOptions().position(location).title(address));
+                        mMap.addMarker(new MarkerOptions()
+                                        .position(location)
+                                        .title(address)
+                                        .snippet(address))
+                                .setTag(address);
 
                         // Move camera to the first property
                         if (!firstLocationSet) {
@@ -79,10 +83,21 @@ public class MapsFragment extends Fragment {
                 if (!firstLocationSet) {
                     Toast.makeText(getActivity(), "No properties found", Toast.LENGTH_SHORT).show();
                 }
+
+                mMap.setOnMarkerClickListener(marker -> {
+                    String propertyId = (String) marker.getTag();
+                    openPropertyDetails(propertyId);
+                    return true;
+                });
             } else {
-                Log.e("Firestore", "Error fetching properties", task.getException());
                 Toast.makeText(getActivity(), "Error loading properties", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void openPropertyDetails(String propertyId) {
+        Intent intent = new Intent(getActivity(), showProperty.class);
+        intent.putExtra("address", propertyId);
+        startActivity(intent);
     }
 }
