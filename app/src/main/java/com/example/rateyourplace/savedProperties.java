@@ -145,7 +145,7 @@ public class savedProperties extends AppCompatActivity {
                                                 imageUris = new ArrayList<>();
                                             }
 
-                                            Property property = new Property(address, imageUris, location, propertyCondition, safety, landlord);
+                                            Property property = new Property(address, imageUris);
                                             propertyList.add(property);
                                         }
                                         propertyAdapter.notifyDataSetChanged();
@@ -193,7 +193,7 @@ public class savedProperties extends AppCompatActivity {
                                                     imageUris = new ArrayList<>();
                                                 }
 
-                                                Property property = new Property(address, imageUris, location, propertyCondition, safety, landlord);
+                                                Property property = new Property(address, imageUris);
                                                 propertyList.add(property);
                                             }
 

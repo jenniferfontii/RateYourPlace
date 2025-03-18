@@ -54,7 +54,11 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
 
         if (property != null) {
             tvAddress.setText(property.getAddress());
-            ratingBar.setRating(property.getAverageRating());
+
+            property.fetchAverageRatings(db, (averages, reviewCount) -> {
+                float overallRating = property.getAverageRating(averages);
+                ratingBar.setRating(overallRating);
+            });
 
             String imageUrl = property.getFirstImageUrl();
             if (imageUrl != null && !imageUrl.isEmpty()) {
