@@ -118,16 +118,12 @@ public class showProperty extends AppCompatActivity {
 
                         if (property != null) {
                             propertyId = doc.getId();
-
                             address.setText(property.getAddress());
+
                             location.setIsIndicator(true);
                             conditions.setIsIndicator(true);
                             safety.setIsIndicator(true);
                             landlord.setIsIndicator(true);
-                            location.setRating(property.getLocation());
-                            conditions.setRating(property.getPropertyCondition());
-                            safety.setRating(property.getSafety());
-                            landlord.setRating(property.getLandlord());
 
                             List<String> imageUrls = (List<String>) doc.get("imageUris");
                             if (imageUrls != null && !imageUrls.isEmpty()) {
@@ -137,12 +133,21 @@ public class showProperty extends AppCompatActivity {
                                 Log.d("showProperty", "No images found for this property.");
                             }
 
+                            // Fetch average ratings and set to RatingBars
+                            property.fetchAverageRatings(db, (averages, reviewCount) -> {
+                                location.setRating(averages.getOrDefault("location", 0f));
+                                conditions.setRating(averages.getOrDefault("property_condition", 0f));
+                                safety.setRating(averages.getOrDefault("safety", 0f));
+                                landlord.setRating(averages.getOrDefault("landlord", 0f));
+                            });
+
                             fetchReviews();
                         }
                     }
                 })
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching property", e));
     }
+
 
     private void loadPropertyImages(List<String> imageUrls) {
         RecyclerView imageRecyclerView = findViewById(R.id.recyclerViewImages);

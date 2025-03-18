@@ -102,17 +102,13 @@ public class home extends AppCompatActivity {
                     propertyList.clear(); // Clear the list before adding new data
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String address = document.getString("address");
-                        int location = document.contains("location") ? document.getLong("location").intValue() : 0;
-                        int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
-                        int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
-                        int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
 
                         List<String> imageUris = (List<String>) document.get("imageUris");
                         if (imageUris == null) {
                             imageUris = new ArrayList<>();
                         }
 
-                        Property property = new Property(address, imageUris, location, propertyCondition, safety, landlord);
+                        Property property = new Property(address, imageUris);
                         propertyList.add(property);
                     }
                     propertyAdapter.notifyDataSetChanged();
@@ -129,17 +125,13 @@ public class home extends AppCompatActivity {
                         String address = document.getString("address");
 
                         if (address != null && address.toLowerCase().contains(query.toLowerCase())) {
-                            int location = document.contains("location") ? document.getLong("location").intValue() : 0;
-                            int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
-                            int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
-                            int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
 
                             List<String> imageUris = (List<String>) document.get("imageUris");
                             if (imageUris == null) {
                                 imageUris = new ArrayList<>();
                             }
 
-                            Property property = new Property(address, imageUris, location, propertyCondition, safety, landlord);
+                            Property property = new Property(address, imageUris);
                             propertyList.add(property);
                         }
                     }

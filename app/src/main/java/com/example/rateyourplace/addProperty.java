@@ -7,14 +7,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -39,11 +34,9 @@ public class addProperty extends AppCompatActivity {
     private ImageAdapter imageAdapter;
     private ArrayList<Uri> imageUris = new ArrayList<>();
 
-    private EditText addressET, comments;
-    private RatingBar ratingLocation, ratingConditions, ratingSafety, ratingLandlord;
+    private EditText addressET;
     private Button selectImagesBtn, submitBtn, addressFinderBtn;
     private ImageButton back;
-    private LinearLayout rootLayout;
     private double selectedLat = 0.0;
     private double selectedLon = 0.0;
     private BottomNavigationView navBar;
@@ -56,17 +49,11 @@ public class addProperty extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewImages);
         addressET = findViewById(R.id.address);
-        comments = findViewById(R.id.comments);
-        ratingLocation = findViewById(R.id.ratingLocation);
-        ratingConditions = findViewById(R.id.ratingConditions);
-        ratingSafety = findViewById(R.id.ratingSafety);
-        ratingLandlord = findViewById(R.id.ratingLandlord);
         selectImagesBtn = findViewById(R.id.addImage);
         submitBtn = findViewById(R.id.submitBtn);
         back = findViewById(R.id.back);
         addressFinderBtn = findViewById(R.id.openAddressFinder);
         navBar = findViewById(R.id.bottom_navigation);
-        rootLayout = findViewById(R.id.linear);
 
         imageAdapter = new ImageAdapter(this, imageUris);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -75,7 +62,7 @@ public class addProperty extends AppCompatActivity {
         selectImagesBtn.setOnClickListener(v -> openImagePicker());
 
         submitBtn.setOnClickListener(v -> {
-            savePropertyToFirebase();  // Save the property to Firebase with image URIs
+            savePropertyToFirebase();
             Intent intent = new Intent(addProperty.this, home.class);
             startActivity(intent);
             Toast.makeText(this, "Property added successfully", Toast.LENGTH_SHORT).show();
@@ -109,31 +96,8 @@ public class addProperty extends AppCompatActivity {
 
             return false;
         });
-
-        comments.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                navBar.setVisibility(BottomNavigationView.GONE); // Hide navigation bar
-            } else {
-                navBar.setVisibility(BottomNavigationView.VISIBLE);
-            }
-        });
-
-        rootLayout.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                // Dismiss the keyboard if any view is touched outside the EditText
-                View view = getWindow().getDecorView();
-                if (view != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-                // Perform the click action for accessibility
-                rootLayout.performClick();
-            }
-            return false;
-        });
     }
 
-    // Image picker launcher
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -176,11 +140,6 @@ public class addProperty extends AppCompatActivity {
     // Save property details to Firebase (with image URIs)
     private void savePropertyToFirebase() {
         String address = this.addressET.getText().toString().trim();
-        String comments = this.comments.getText().toString().trim();
-        int locationRating = (int) ratingLocation.getRating();
-        int conditionRating = (int) ratingConditions.getRating();
-        int safetyRating = (int) ratingSafety.getRating();
-        int landlordRating = (int) ratingLandlord.getRating();
 
         if (address.isEmpty()) {
             Toast.makeText(this, "Please enter an address", Toast.LENGTH_SHORT).show();
@@ -190,11 +149,6 @@ public class addProperty extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> property = new HashMap<>();
         property.put("address", address);
-        property.put("location", locationRating);
-        property.put("property_condition", conditionRating);
-        property.put("safety", safetyRating);
-        property.put("landlord", landlordRating);
-        property.put("additional_comments", comments);
         property.put("latitude", selectedLat);
         property.put("longitude", selectedLon);
 
