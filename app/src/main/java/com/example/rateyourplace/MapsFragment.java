@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -33,12 +37,13 @@ public class MapsFragment extends Fragment {
     private FirebaseFirestore db;
     private FusedLocationProviderClient fusedLocationClient;
     private boolean firstLocationSet = false;
+    private ActivityResultLauncher<String> locationPermissionLauncher;
 
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
-            checkUserLocation();
+            checkAndRequestLocationPermission();
             fetchPropertiesFromFirestore();
         }
     };
@@ -56,11 +61,45 @@ public class MapsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
+        // Register the permission launcher
+        locationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        checkUserLocation(); // If permission granted, fetch user location
+                    } else {
+                        Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+                        fetchPropertiesFromFirestore(); // Continue with properties
+                    }
+                }
+        );
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+    }
+
+    private void checkAndRequestLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Show an AlertDialog to ask the user if they want to enable location
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Enable Location")
+                    .setMessage("This app needs location permission to show your position on the map. Do you want to enable it?")
+                    .setPositiveButton("Yes", (dialog, which) -> requestLocationPermission()) // Uses new method
+                    .setNegativeButton("No", (dialog, which) -> {
+                        dialog.dismiss();
+                        fetchPropertiesFromFirestore(); // Continue without user location
+                    })
+                    .show();
+        } else {
+            checkUserLocation(); // If permission is already granted, fetch location
+        }
+    }
+
+    private void requestLocationPermission() {
+        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     private void checkUserLocation() {
