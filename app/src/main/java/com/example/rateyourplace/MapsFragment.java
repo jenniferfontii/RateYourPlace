@@ -2,16 +2,21 @@ package com.example.rateyourplace;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,17 +26,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class MapsFragment extends Fragment {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
+    private FusedLocationProviderClient fusedLocationClient;
+    private boolean firstLocationSet = false;
 
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            checkUserLocation();
             fetchPropertiesFromFirestore();
         }
     };
@@ -47,10 +54,25 @@ public class MapsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
+        }
+    }
+
+    private void checkUserLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                if (location != null) {
+                    LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12));
+                    firstLocationSet = true;
+                }
+            });
         }
     }
 
@@ -59,7 +81,6 @@ public class MapsFragment extends Fragment {
         CollectionReference propertiesRef = db.collection("properties");
         propertiesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-                boolean firstLocationSet = false;
                 for (DocumentSnapshot document : task.getResult()) {
                     Double latitude = document.getDouble("latitude");
                     Double longitude = document.getDouble("longitude");
@@ -69,11 +90,10 @@ public class MapsFragment extends Fragment {
                         LatLng location = new LatLng(latitude, longitude);
                         mMap.addMarker(new MarkerOptions()
                                         .position(location)
-                                        .title(address)
-                                        .snippet(address))
+                                        .title(address))
                                 .setTag(address);
 
-                        // Move camera to the first property
+                        // If no user location was set, focus on the first property
                         if (!firstLocationSet) {
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
                             firstLocationSet = true;
