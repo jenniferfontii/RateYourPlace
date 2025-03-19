@@ -41,6 +41,7 @@ public class accountManagement extends AppCompatActivity {
     private ImageView insertPicture;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
+    BottomNavigationView navBar;
 
     private final ActivityResultLauncher<Intent> pictureSelectionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == RESULT_OK) {
@@ -54,8 +55,12 @@ public class accountManagement extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(0);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
     }
 
     @Override
@@ -71,8 +76,6 @@ public class accountManagement extends AppCompatActivity {
 
         Button signout = findViewById(R.id.signOut);
         TextView changepsw = findViewById(R.id.changePsw);
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(0);
         ImageButton back = findViewById(R.id.back);
         EditText email = findViewById(R.id.email);
         insertPicture = findViewById(R.id.account);
@@ -84,6 +87,11 @@ public class accountManagement extends AppCompatActivity {
 
         email.setEnabled(false);
 
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
 
         if (user != null) {
             email.setText(user.getEmail());

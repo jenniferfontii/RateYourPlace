@@ -27,12 +27,17 @@ public class pastReviews extends AppCompatActivity {
     private ReviewAdapter reviewAdapter;
     private List<Review> reviewList = new ArrayList<>();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    BottomNavigationView navBar;
 
     @Override
     protected void onResume() {
         super.onResume();
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(-1);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
     }
 
     @Override
@@ -51,8 +56,12 @@ public class pastReviews extends AppCompatActivity {
         reviewAdapter = new ReviewAdapter(this, reviewList,"pastReviews");
         listView.setAdapter(reviewAdapter);
 
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(-1);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

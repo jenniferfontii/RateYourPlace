@@ -48,6 +48,16 @@ public class addProperty extends AppCompatActivity {
     private double selectedLon = 0.0;
     private BottomNavigationView navBar;
 
+    protected void onResume() {
+        super.onResume();
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +95,13 @@ public class addProperty extends AppCompatActivity {
             });
             dialog.show(getSupportFragmentManager(), "FindAddressDialog");
         });
+
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

@@ -30,6 +30,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class settings extends AppCompatActivity {
     FirebaseAuth auth;
     private Switch notifications, location, galleryAccess;
+    BottomNavigationView navBar;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +65,7 @@ public class settings extends AppCompatActivity {
         getFirebaseCloudMessagingToken();
 
         ImageButton back = findViewById(R.id.back);
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(-1);
+        navBar = findViewById(R.id.bottom_navigation);
         TextView deleteAccount = findViewById(R.id.deleteAccount);
         ImageView profilePic = findViewById(R.id.profilePic);
         TextView welcome = findViewById(R.id.welcome);
@@ -72,6 +83,12 @@ public class settings extends AppCompatActivity {
             Toast.makeText(this, "No user is logged in", Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

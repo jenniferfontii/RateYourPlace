@@ -15,12 +15,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class mapsSearch extends AppCompatActivity {
+
+    BottomNavigationView navBar;
     @Override
     protected void onResume() {
         super.onResume();
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(0);
-        navBar.setItemActiveIndicatorEnabled(false);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
     }
 
     @Override
@@ -41,9 +46,13 @@ public class mapsSearch extends AppCompatActivity {
         }
 
         Button listView =findViewById(R.id.listView);
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(0);
-        navBar.setItemActiveIndicatorEnabled(false);
+        navBar = findViewById(R.id.bottom_navigation);
+
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
 
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

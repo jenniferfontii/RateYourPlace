@@ -31,12 +31,17 @@ public class savedProperties extends AppCompatActivity {
     private List<Property> propertyList = new ArrayList<>();
     private FirebaseAuth auth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    BottomNavigationView navBar;
 
     @Override
     protected void onResume() {
         super.onResume();
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(R.id.nav_saved);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
     }
 
     @Override
@@ -51,8 +56,13 @@ public class savedProperties extends AppCompatActivity {
         });
 
         ImageButton mapView = findViewById(R.id.searchMap);
-        BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
-        navBar.setSelectedItemId(R.id.nav_search);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
 
         listView = findViewById(R.id.listView);
         propertyList = new ArrayList<>();
