@@ -2,13 +2,16 @@ package com.example.rateyourplace;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,10 +21,18 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,13 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class leaveReview extends DialogFragment {
 
@@ -50,7 +54,7 @@ public class leaveReview extends DialogFragment {
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
     private String propertyId;
-    private String existingReviewId; // To track the existing review
+    private String existingReviewId;
 
     public static leaveReview newInstance(String propertyId) {
         leaveReview fragment = new leaveReview();
@@ -70,7 +74,7 @@ public class leaveReview extends DialogFragment {
         if (user == null) {
             Toast.makeText(getActivity(), "Login to leave a review", Toast.LENGTH_SHORT).show();
             dismiss();
-            return new Dialog(requireContext()); // Return an empty dialog to prevent errors
+            return new Dialog(requireContext());
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -85,7 +89,7 @@ public class leaveReview extends DialogFragment {
         addPics = view.findViewById(R.id.addPics);
         recyclerView = view.findViewById(R.id.recyclerViewImages);
 
-        addPics.setOnClickListener(view1 -> openImagePicker());
+        addPics.setOnClickListener(view1 -> checkPermissionsAndOpenImagePicker());
 
         imageAdapter = new ImageAdapter(getActivity(), imageUris);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -133,6 +137,28 @@ public class leaveReview extends DialogFragment {
             imageAdapter.notifyDataSetChanged();
         }
     }
+
+    private void checkPermissionsAndOpenImagePicker() {
+        String permission = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                ? Manifest.permission.READ_MEDIA_IMAGES
+                : Manifest.permission.READ_EXTERNAL_STORAGE;
+
+        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+            openImagePicker();
+        } else {
+            requestPermissionLauncher.launch(permission);
+        }
+    }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if (isGranted) {
+                    openImagePicker();
+                } else {
+                    Toast.makeText(getActivity(), "Permission denied. Cannot access images.", Toast.LENGTH_SHORT).show();
+                }
+            });
 
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -213,15 +239,6 @@ public class leaveReview extends DialogFragment {
             review.put("ratingLandlord", ratingLandlord);
             review.put("comment", comment);
             review.put("timestamp", System.currentTimeMillis());
-
-            List<String> imageUrisList = new ArrayList<>();
-            for (Uri uri : imageUris) {
-                Uri savedUri = saveImageLocally(uri);
-                if (savedUri != null) {
-                    imageUrisList.add(savedUri.toString());
-                }
-            }
-            review.put("imageUris", imageUrisList);
 
             db.collection("reviews").document(reviewId)
                     .set(review)
