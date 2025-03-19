@@ -9,8 +9,8 @@
 
     <ImageButton
         android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@null"
         android:contentDescription="@string/back_button"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
@@ -53,9 +53,9 @@
 
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchNotification"
         android:layout_width="284dp"
-        android:layout_height="27dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/poppins_medium"
         android:text="@string/notification"
         android:textSize="18sp"
@@ -68,9 +68,9 @@
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switchLocation"
         android:layout_width="284dp"
-        android:layout_height="27dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/poppins_medium"
         android:text="@string/current_location"
         android:textSize="18sp"
@@ -83,11 +83,11 @@
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Switch
-        android:id="@+id/switch3"
+        android:id="@+id/switchGallery"
         android:layout_width="284dp"
-        android:layout_height="27dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/poppins_medium"
-        android:text="@string/high_contrast"
+        android:text="Photo gallery access"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,13 +100,13 @@
     <TextView
         android:id="@+id/deleteAccount"
         android:layout_width="340dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:clickable="true"
         android:focusable="true"
         android:fontFamily="@font/poppins_bold"
         android:text="@string/delete_account"
         android:textColor="#f70008"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.887"
