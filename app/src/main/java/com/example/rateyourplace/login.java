@@ -25,6 +25,7 @@ import com.google.firebase.auth.AuthResult;
 
 public class login extends AppCompatActivity {
 
+    //Global variablles
     private EditText emailEt, passwordEt;
     private Button loginBtn;
     private Button signupBtn;
@@ -41,33 +42,29 @@ public class login extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         auth = FirebaseAuth.getInstance();
         emailEt = findViewById(R.id.email);
         passwordEt = findViewById(R.id.password);
         loginBtn = findViewById(R.id.loginBtn);
         signupBtn = findViewById(R.id.signupBtn);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginUser();
-            }
-        });
+        //Action listeners
+        loginBtn.setOnClickListener(v -> loginUser());
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(login.this, signup.class);
-                startActivity(intent);
-            }
+        signupBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(login.this, signup.class);
+            startActivity(intent);
         });
     }
 
-
+    //Logs in
     private void loginUser() {
+        //gets email and password
         String email = emailEt.getText().toString().trim();
         String password = passwordEt.getText().toString().trim();
 
+        //If email and passwords are filled tries to log in
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter all details", Toast.LENGTH_SHORT).show();
             return;

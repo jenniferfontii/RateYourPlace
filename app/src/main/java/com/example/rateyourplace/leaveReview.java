@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class leaveReview extends DialogFragment {
-
+    //set global variables
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private ArrayList<Uri> imageUris = new ArrayList<>();
@@ -56,9 +56,11 @@ public class leaveReview extends DialogFragment {
     private String propertyId;
     private String existingReviewId;
 
+    //constructor
     public static leaveReview newInstance(String propertyId) {
         leaveReview fragment = new leaveReview();
         Bundle args = new Bundle();
+        //Gets propertyId from where its called
         args.putString("propertyId", propertyId);
         fragment.setArguments(args);
         return fragment;
@@ -71,6 +73,7 @@ public class leaveReview extends DialogFragment {
             propertyId = getArguments().getString("propertyId");
         }
 
+        //If no user logged in returns
         if (user == null) {
             Toast.makeText(getActivity(), "Login to leave a review", Toast.LENGTH_SHORT).show();
             dismiss();
@@ -81,6 +84,7 @@ public class leaveReview extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_leave_review, null);
 
+        //Assign xml components to variables
         location = view.findViewById(R.id.ratingLocation);
         conditions = view.findViewById(R.id.ratingConditions);
         landlord = view.findViewById(R.id.ratingLandlord);
@@ -89,12 +93,14 @@ public class leaveReview extends DialogFragment {
         addPics = view.findViewById(R.id.addPics);
         recyclerView = view.findViewById(R.id.recyclerViewImages);
 
+        //add Pictures action listener
         addPics.setOnClickListener(view1 -> checkPermissionsAndOpenImagePicker());
 
         imageAdapter = new ImageAdapter(getActivity(), imageUris);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(imageAdapter);
 
+        //Builds Dialog
         builder.setView(view)
                 .setTitle("Leave a Review")
                 .setPositiveButton("Save", (dialog, id) -> saveReviewToFirebase())
@@ -105,6 +111,7 @@ public class leaveReview extends DialogFragment {
         return builder.create();
     }
 
+    //Check if the user already left a review for the property they are checking
     private void checkExistingReview() {
         if (user == null || propertyId == null) return;
 
@@ -122,6 +129,7 @@ public class leaveReview extends DialogFragment {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error checking existing review", e));
     }
 
+    //If user already has left one review for property it opens that one up
     private void loadExistingReview(DocumentSnapshot document) {
         location.setRating(document.getDouble("ratingLocation").floatValue());
         conditions.setRating(document.getDouble("ratingConditions").floatValue());
@@ -138,6 +146,7 @@ public class leaveReview extends DialogFragment {
         }
     }
 
+    //Check that the user gave gallery permission
     private void checkPermissionsAndOpenImagePicker() {
         String permission = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 ? Manifest.permission.READ_MEDIA_IMAGES
@@ -150,6 +159,7 @@ public class leaveReview extends DialogFragment {
         }
     }
 
+    //Requests permission
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -160,6 +170,7 @@ public class leaveReview extends DialogFragment {
                 }
             });
 
+    //Open Imagine Picker
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -167,22 +178,29 @@ public class leaveReview extends DialogFragment {
         imagePickerLauncher.launch(Intent.createChooser(intent, "Select Images"));
     }
 
+    //Image Picker
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Intent data = result.getData();
-
+                    //When a picture is selected it saves the URI
                     if (data.getClipData() != null) {
                         int count = data.getClipData().getItemCount();
                         for (int i = 0; i < count; i++) {
                             ClipData.Item item = data.getClipData().getItemAt(i);
                             if (item != null && item.getUri() != null) {
-                                imageUris.add(item.getUri());
+                                Uri savedUri = saveImageLocally(item.getUri());
+                                if (savedUri != null) {
+                                    imageUris.add(savedUri);
+                                }
                             }
                         }
                     } else if (data.getData() != null) {
-                        imageUris.add(data.getData());
+                        Uri savedUri = saveImageLocally(data.getData());
+                        if (savedUri != null) {
+                            imageUris.add(savedUri);
+                        }
                     }
 
                     imageAdapter.notifyDataSetChanged();
@@ -190,6 +208,8 @@ public class leaveReview extends DialogFragment {
             }
     );
 
+
+    //Saves the image in local storage
     private Uri saveImageLocally(Uri imageUri) {
         try {
             InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
@@ -219,6 +239,7 @@ public class leaveReview extends DialogFragment {
         }
     }
 
+    //Collects all fields and saves review to firebase
     private void saveReviewToFirebase() {
         if (user != null && propertyId != null) {
             String reviewId = (existingReviewId != null) ? existingReviewId : UUID.randomUUID().toString();
@@ -239,6 +260,16 @@ public class leaveReview extends DialogFragment {
             review.put("ratingLandlord", ratingLandlord);
             review.put("comment", comment);
             review.put("timestamp", System.currentTimeMillis());
+
+
+            List<String> imageUrisList = new ArrayList<>();
+            for (Uri uri : imageUris) {
+                Uri savedUri = saveImageLocally(uri);
+                if (savedUri != null) {
+                    imageUrisList.add(savedUri.toString());
+                }
+            }
+            review.put("imageUris", imageUrisList);
 
             db.collection("reviews").document(reviewId)
                     .set(review)

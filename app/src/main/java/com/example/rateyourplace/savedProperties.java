@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class savedProperties extends AppCompatActivity {
+    //set global variables
     private ListView listView;
     private PropertyAdapter propertyAdapter;
     private List<Property> propertyList = new ArrayList<>();
@@ -33,15 +34,12 @@ public class savedProperties extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     BottomNavigationView navBar;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
         navBar = findViewById(R.id.bottom_navigation);
-        navBar.getMenu().setGroupCheckable(0, true, false);
-        for (int i = 0; i < navBar.getMenu().size(); i++) {
-            navBar.getMenu().getItem(i).setChecked(false);
-        }
-        navBar.getMenu().setGroupCheckable(0, true, true);
+        navBar.setSelectedItemId(R.id.nav_saved);
     }
 
     @Override
@@ -55,15 +53,9 @@ public class savedProperties extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         ImageButton mapView = findViewById(R.id.searchMap);
         navBar = findViewById(R.id.bottom_navigation);
-        navBar = findViewById(R.id.bottom_navigation);
-        navBar.getMenu().setGroupCheckable(0, true, false);
-        for (int i = 0; i < navBar.getMenu().size(); i++) {
-            navBar.getMenu().getItem(i).setChecked(false);
-        }
-        navBar.getMenu().setGroupCheckable(0, true, true);
-
         listView = findViewById(R.id.listView);
         propertyList = new ArrayList<>();
         propertyAdapter = new PropertyAdapter(this, propertyList);
@@ -71,6 +63,10 @@ public class savedProperties extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         SearchView searchView = findViewById(R.id.searchView);
+
+        navBar.setSelectedItemId(R.id.nav_saved);
+
+        //if searchview is selected hides navabr for better design
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 navBar.setVisibility(View.GONE);
@@ -78,6 +74,7 @@ public class savedProperties extends AppCompatActivity {
                 navBar.setVisibility(View.VISIBLE);
             }
         });
+        //Query listener for searchbox
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -95,7 +92,7 @@ public class savedProperties extends AppCompatActivity {
                 return false;
             }
         });
-
+        //navbar action listeners
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -126,6 +123,7 @@ public class savedProperties extends AppCompatActivity {
 
     }
 
+    // Fetches properties from db and displays them
     private void fetchProperties(FirebaseUser user) {
 
         String userId = user.getUid();
@@ -145,11 +143,6 @@ public class savedProperties extends AppCompatActivity {
                                     if (!queryDocumentSnapshots.isEmpty()) {
                                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                             String address = document.getString("address");
-                                            int location = document.contains("location") ? document.getLong("location").intValue() : 0;
-                                            int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
-                                            int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
-                                            int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
-
                                             List<String> imageUris = (List<String>) document.get("imageUris");
                                             if (imageUris == null) {
                                                 imageUris = new ArrayList<>();
@@ -173,6 +166,7 @@ public class savedProperties extends AppCompatActivity {
             Toast.makeText(this, "Error fetching saved properties", Toast.LENGTH_SHORT).show();
         });
     }
+    // Fetches properties from DB that match the query and displays them
     private void searchProperties(FirebaseUser user, String searchQuery) {
 
         String userId = user.getUid();
@@ -193,11 +187,6 @@ public class savedProperties extends AppCompatActivity {
                                         if (!queryDocumentSnapshots.isEmpty()) {
                                             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                                 String address = document.getString("address");
-                                                int location = document.contains("location") ? document.getLong("location").intValue() : 0;
-                                                int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
-                                                int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
-                                                int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
-
                                                 List<String> imageUris = (List<String>) document.get("imageUris");
                                                 if (imageUris == null) {
                                                     imageUris = new ArrayList<>();

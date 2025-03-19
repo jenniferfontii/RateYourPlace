@@ -18,6 +18,7 @@ public class mapsSearch extends AppCompatActivity {
 
     BottomNavigationView navBar;
     @Override
+    //On resume method, used if activity is accessed using a back button
     protected void onResume() {
         super.onResume();
         navBar = findViewById(R.id.bottom_navigation);
@@ -39,15 +40,18 @@ public class mapsSearch extends AppCompatActivity {
             return insets;
         });
 
+        // Loads map
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.maps_container, new MapsFragment());
             transaction.commit();
         }
 
+        // Action listeners
         Button listView =findViewById(R.id.listView);
         navBar = findViewById(R.id.bottom_navigation);
 
+        //Set nav bar to no focus
         navBar.getMenu().setGroupCheckable(0, true, false);
         for (int i = 0; i < navBar.getMenu().size(); i++) {
             navBar.getMenu().getItem(i).setChecked(false);

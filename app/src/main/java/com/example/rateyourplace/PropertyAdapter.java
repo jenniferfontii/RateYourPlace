@@ -46,6 +46,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_property, parent, false);
         }
 
+        //Assign xml components to variables
         Property property = getItem(position);
         TextView tvAddress = convertView.findViewById(R.id.address);
         ImageView ivPropertyImage = convertView.findViewById(R.id.ivMainImage);
@@ -53,13 +54,16 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         ImageButton saveBtn = convertView.findViewById(R.id.save);
 
         if (property != null) {
+            //set address
             tvAddress.setText(property.getAddress());
 
+            //set Rating bar
             property.fetchAverageRatings(db, (averages, reviewCount) -> {
                 float overallRating = property.getAverageRating(averages);
                 ratingBar.setRating(overallRating);
             });
 
+            //set Image
             String imageUrl = property.getFirstImageUrl();
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 ivPropertyImage.setTag(imageUrl);
@@ -77,12 +81,14 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         return convertView;
     }
 
+    //open Show Property
     private void openShowProperty(Property property) {
         Intent intent = new Intent(getContext(), showProperty.class);
         intent.putExtra("address", property.getAddress());
         getContext().startActivity(intent);
     }
 
+    //Checks if the user saved the property if saved sets the heart icon to the filled one
     private void checkIfPropertyIsSaved(String propertyAddress, ImageButton btnSave) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) return;
@@ -104,6 +110,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         }).addOnFailureListener(e -> btnSave.setImageResource(R.drawable.ic_saved));
     }
 
+    //handles the click for save and unsave
     private void handleSaveProperty(Property property, ImageButton btnSave) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
@@ -123,7 +130,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
             if (savedProperties == null) savedProperties = new ArrayList<>();
 
             if (savedProperties.contains(propertyAddress)) {
-                // 🔹 Property is already saved → Remove it
+                //If property is already saved it removes it
                 savedProperties.remove(propertyAddress);
                 userSavedRef.set(Collections.singletonMap("properties", savedProperties), SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
@@ -132,7 +139,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
                         })
                         .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to remove property", Toast.LENGTH_SHORT).show());
             } else {
-                // 🔹 Property is NOT saved → Add it
+                //If property isnt saved it it adds it
                 savedProperties.add(propertyAddress);
                 userSavedRef.set(Collections.singletonMap("properties", savedProperties), SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
@@ -144,6 +151,7 @@ public class PropertyAdapter extends ArrayAdapter<Property> {
         }).addOnFailureListener(e -> Toast.makeText(getContext(), "Error loading saved properties", Toast.LENGTH_SHORT).show());
     }
 
+    //Load images
     private void loadImageUsingPicasso(String imageUrl, final ImageView ivPropertyImage) {
         Log.d("ImageLoader", "Loading image from URI: " + imageUrl);
 

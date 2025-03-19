@@ -10,9 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+// Welcome page
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,32 +23,25 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         Button loginBtn = findViewById(R.id.loginBtn);
         Button signupBtn = findViewById(R.id.signupBtn);
         Button noAccountBtn = findViewById(R.id.noAccountBtn);
 
-       loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, login.class);
-                startActivity(intent);
-            }
+        //Action Listeners
+       loginBtn.setOnClickListener(v -> {
+           Intent intent = new Intent(MainActivity.this, login.class);
+           startActivity(intent);
+       });
+
+        signupBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, signup.class);
+            startActivity(intent);
         });
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, signup.class);
-                startActivity(intent);
-            }
-        });
-
-        noAccountBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, home.class);
-                startActivity(intent);
-            }
+        noAccountBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, home.class);
+            startActivity(intent);
         });
     }
 }

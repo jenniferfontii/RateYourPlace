@@ -20,7 +20,9 @@ public class deleteAccount extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+        //Builds dialog
         builder.setTitle("Delete account").setMessage("Are you sure you want to delete your account?").setPositiveButton("Delete", (dialog, id) -> {
+            //If delete is pressed calls delete method
             delete();
             dismiss();
         }).setNegativeButton("Cancel", (dialog, id) -> dismiss());
@@ -29,11 +31,15 @@ public class deleteAccount extends DialogFragment {
     }
 
     private void delete() {
+        //Initializes database and authentication
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
+        //Checks if user is logged in
         if (auth.getCurrentUser() != null) {
+            //Gets userid
             String userId = auth.getCurrentUser().getUid();
+            //Delete user from firestore with that userid
             auth.getCurrentUser().delete().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     firestore.collection("users").document(userId).delete().addOnSuccessListener(aVoid -> {

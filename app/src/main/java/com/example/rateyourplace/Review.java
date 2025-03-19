@@ -16,91 +16,70 @@ public class Review {
     private String userId;
     private String reviewId;
 
+    //Gets and setts
     public String getReviewId() {
         return reviewId;
     }
     public void setReviewId(String reviewId) {
         this.reviewId =reviewId;
     }
-
     public String getUserEmail() {
         return userEmail;
     }
-
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-
     private String userEmail;
-
     public String getComment() {
         return comment;
     }
-
     public void setComment(String comment) {
         this.comment = comment;
     }
-
-
-
     public int getRatingLocation() {
         return ratingLocation;
     }
-
     public void setRatingLocation(int ratingLocation) {
         this.ratingLocation = ratingLocation;
     }
-
     public String getUserId() {
         return userId;
     }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
     public int getRatingSafety() {
         return ratingSafety;
     }
-
     public void setRatingSafety(int ratingSafety) {
         this.ratingSafety = ratingSafety;
     }
-
     public int getRatingConditions() {
         return ratingConditions;
     }
-
     public void setRatingConditions(int ratingConditions) {
         this.ratingConditions = ratingConditions;
     }
-
     public int getRatingLandlord() {
         return ratingLandlord;
     }
-
     public void setRatingLandlord(int ratingLandlord) {
         this.ratingLandlord = ratingLandlord;
     }
-
     public List<String> getImageUris() {
         return imageUris;
     }
-
     public void setImageUris(List<String> imageUris) {
         this.imageUris = imageUris;
     }
-
     public String getPropertyId() {
         return propertyId;
     }
-
     public void setPropertyId(String propertyId) {
         this.propertyId = propertyId;
     }
 
-
-
+    //Empty constructor for firebase
     public Review(){
 
     }

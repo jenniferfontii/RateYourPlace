@@ -31,6 +31,7 @@ import java.util.List;
 
 public class showProperty extends AppCompatActivity {
 
+    //Global Variables
     private TextView address;
     private RatingBar location, conditions, safety, landlord;
     private String propertyId;
@@ -40,6 +41,7 @@ public class showProperty extends AppCompatActivity {
     private List<Review> reviewList = new ArrayList<>();
     BottomNavigationView navBar;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -62,6 +64,7 @@ public class showProperty extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         Button addReview = findViewById(R.id.addReview);
         ImageButton back = findViewById(R.id.back);
         String propertyAddress = getIntent().getStringExtra("address");
@@ -76,6 +79,7 @@ public class showProperty extends AppCompatActivity {
         reviewAdapter = new ReviewAdapter(this, reviewList,"showProperty");
         listView.setAdapter(reviewAdapter);
 
+        //navbar action listener and set focus
         navBar = findViewById(R.id.bottom_navigation);
         navBar.getMenu().setGroupCheckable(0, true, false);
         for (int i = 0; i < navBar.getMenu().size(); i++) {
@@ -100,8 +104,10 @@ public class showProperty extends AppCompatActivity {
             return false;
         });
 
+        //display details
         findPropertyDetails(propertyAddress);
 
+        //action listener to add review
         addReview.setOnClickListener(view -> {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -116,6 +122,7 @@ public class showProperty extends AppCompatActivity {
         back.setOnClickListener(view -> finish());
     }
 
+    //fetch property with correct address
     private void findPropertyDetails(String pAddress) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("properties").whereEqualTo("address", pAddress)
@@ -126,6 +133,7 @@ public class showProperty extends AppCompatActivity {
                         Property property = doc.toObject(Property.class);
 
                         if (property != null) {
+                            //displays all the values
                             propertyId = doc.getId();
                             address.setText(property.getAddress());
 
@@ -158,6 +166,7 @@ public class showProperty extends AppCompatActivity {
     }
 
 
+    //Load images from local storage
     private void loadPropertyImages(List<String> imageUrls) {
         RecyclerView imageRecyclerView = findViewById(R.id.recyclerViewImages);
         imageRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -173,7 +182,7 @@ public class showProperty extends AppCompatActivity {
     }
 
 
-
+    //fetch all reviews for that property
     private void fetchReviews() {
         if (propertyId == null) return;
         FirebaseFirestore db = FirebaseFirestore.getInstance();

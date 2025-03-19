@@ -29,6 +29,7 @@ public class pastReviews extends AppCompatActivity {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     BottomNavigationView navBar;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -51,11 +52,13 @@ public class pastReviews extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         ImageButton back = findViewById(R.id.back);
         listView = findViewById(R.id.listview);
         reviewAdapter = new ReviewAdapter(this, reviewList,"pastReviews");
         listView.setAdapter(reviewAdapter);
 
+        //Set navbar focus to none since this page is not connected directly with it
         navBar = findViewById(R.id.bottom_navigation);
         navBar.getMenu().setGroupCheckable(0, true, false);
         for (int i = 0; i < navBar.getMenu().size(); i++) {
@@ -82,6 +85,8 @@ public class pastReviews extends AppCompatActivity {
         back.setOnClickListener(view -> finish());
         fetchReviews();
     }
+
+    //Finds all the reviews for a specific user
     public void fetchReviews(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = user.getUid();

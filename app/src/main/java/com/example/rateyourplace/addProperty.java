@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,7 +16,6 @@ import android.content.pm.PackageManager;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -37,6 +35,7 @@ import java.util.Map;
 
 public class addProperty extends AppCompatActivity {
 
+    //Set global variable
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
     private ArrayList<Uri> imageUris = new ArrayList<>();
@@ -48,6 +47,7 @@ public class addProperty extends AppCompatActivity {
     private double selectedLon = 0.0;
     private BottomNavigationView navBar;
 
+    //On resume method, used if activity is accessed using a back button
     protected void onResume() {
         super.onResume();
         navBar = findViewById(R.id.bottom_navigation);
@@ -64,6 +64,7 @@ public class addProperty extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_property);
 
+        //Assign xml components to variables
         recyclerView = findViewById(R.id.recyclerViewImages);
         addressET = findViewById(R.id.address);
         selectImagesBtn = findViewById(R.id.addImage);
@@ -76,8 +77,10 @@ public class addProperty extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(imageAdapter);
 
+        //Check gallery permissions when
         selectImagesBtn.setOnClickListener(v -> checkGalleryPermission());
 
+        //add property to firebase and redirects to home screen
         submitBtn.setOnClickListener(v -> {
             savePropertyToFirebase();
             Intent intent = new Intent(addProperty.this, home.class);
@@ -85,8 +88,10 @@ public class addProperty extends AppCompatActivity {
             Toast.makeText(this, "Property added successfully", Toast.LENGTH_SHORT).show();
         });
 
+        //Back button
         back.setOnClickListener(view -> finish());
 
+        //Finds the cooridnates of the address
         addressFinderBtn.setOnClickListener(view -> {
             findAddress dialog = new findAddress((address, latitude, longitude) -> {
                 addressET.setText(address);
@@ -96,6 +101,7 @@ public class addProperty extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "FindAddressDialog");
         });
 
+        //navbar action listeners and focus
         navBar = findViewById(R.id.bottom_navigation);
         navBar.getMenu().setGroupCheckable(0, true, false);
         for (int i = 0; i < navBar.getMenu().size(); i++) {
@@ -120,6 +126,7 @@ public class addProperty extends AppCompatActivity {
         });
     }
 
+    //Image picker
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -145,6 +152,7 @@ public class addProperty extends AppCompatActivity {
             }
     );
 
+    //Gallery permissions results
     private final ActivityResultLauncher<String> galleryPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -156,6 +164,7 @@ public class addProperty extends AppCompatActivity {
             }
     );
 
+    //Checks if user has gallery permissions
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
             openImagePicker();
@@ -164,6 +173,7 @@ public class addProperty extends AppCompatActivity {
         }
     }
 
+    //Permissions dialog
     private void showPermissionDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Gallery Permission Needed")
@@ -173,10 +183,12 @@ public class addProperty extends AppCompatActivity {
                 .show();
     }
 
+    //Rrequests gallery permission
     private void requestGalleryPermission() {
         galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
     }
 
+    //opens Image Picker
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -184,20 +196,27 @@ public class addProperty extends AppCompatActivity {
         imagePickerLauncher.launch(Intent.createChooser(intent, "Select Images"));
     }
 
+    //Saves property in firebase
     private void savePropertyToFirebase() {
+        //Uses address as ID
         String address = this.addressET.getText().toString().trim();
 
+        //As address is the ID if not present can't add it to firebase so returns
         if (address.isEmpty()) {
             Toast.makeText(this, "Please enter an address", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        //initiate firebase
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        //Uses hashmap to map all the values
         Map<String, Object> property = new HashMap<>();
         property.put("address", address);
         property.put("latitude", selectedLat);
         property.put("longitude", selectedLon);
 
+        //Gets the URI for the pictures
         List<String> imageUrisList = new ArrayList<>();
         for (Uri uri : imageUris) {
             Uri savedUri = saveImageLocally(uri);
@@ -207,25 +226,30 @@ public class addProperty extends AppCompatActivity {
         }
         property.put("imageUris", imageUrisList);
 
+        //Adds property to firebase
         db.collection("properties").document(address)
                 .set(property)
                 .addOnSuccessListener(aVoid -> Toast.makeText(this, "Property saved!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Error saving property", Toast.LENGTH_SHORT).show());
     }
 
+    //Saves images locally so that they can be retrieved
     private Uri saveImageLocally(Uri imageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
+            //Creates directory if it doesn't exists
             File directory = new File(getExternalFilesDir(null), "property_images");
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
+            //Saves the file with the timestamp to make it unique
             String fileName = "image_" + System.currentTimeMillis() + ".png";
             File imageFile = new File(directory, fileName);
 
+            //Takes a bitmap image and compresses it into png and then saves and closes the files
             FileOutputStream outputStream = new FileOutputStream(imageFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             outputStream.flush();

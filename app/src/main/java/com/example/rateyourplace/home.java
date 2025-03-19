@@ -13,8 +13,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.CollectionReference;
+
 import androidx.appcompat.widget.SearchView;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -23,11 +24,13 @@ import java.util.List;
 
 public class home extends AppCompatActivity {
 
+    //set global variables
     private ListView listView;
     private PropertyAdapter propertyAdapter;
     private List<Property> propertyList = new ArrayList<>();
     private FirebaseFirestore db;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -41,6 +44,7 @@ public class home extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        //Assign xml components to variables
         listView = findViewById(R.id.listView);
         propertyList = new ArrayList<>();
         propertyAdapter = new PropertyAdapter(this, propertyList);
@@ -52,6 +56,7 @@ public class home extends AppCompatActivity {
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_search);
         SearchView searchView = findViewById(R.id.searchView);
+        //if searchview is selected hides navabr for better design
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 navBar.setVisibility(View.GONE);
@@ -59,6 +64,7 @@ public class home extends AppCompatActivity {
                 navBar.setVisibility(View.VISIBLE);
             }
         });
+        //Query listener for searchbox
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -72,7 +78,7 @@ public class home extends AppCompatActivity {
                 return true;
             }
         });
-
+        //navbar action listener
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -89,12 +95,14 @@ public class home extends AppCompatActivity {
             return false;
         });
 
+        // Buttons action listeners
         addPropertyBtn.setOnClickListener(v -> startActivity(new Intent(home.this, addProperty.class)));
         mapView.setOnClickListener(view -> startActivity(new Intent(home.this, mapsSearch.class)));
 
         fetchProperties();
     }
 
+    // Fetches properties from db and displays them
     private void fetchProperties() {
         db.collection("properties")
                 .get()
@@ -116,6 +124,7 @@ public class home extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(home.this, "Failed to load properties", Toast.LENGTH_SHORT).show());
     }
 
+    // Fetches properties from DB that match the query and displays them
     private void searchProperties(String query) {
         db.collection("properties")
                 .get()
@@ -139,7 +148,6 @@ public class home extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(home.this, "Search failed", Toast.LENGTH_SHORT).show());
     }
-
 
 
 }

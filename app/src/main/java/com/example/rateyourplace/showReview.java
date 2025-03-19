@@ -25,6 +25,7 @@ import java.util.List;
 
 public class showReview extends DialogFragment {
 
+    //Global variables
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RatingBar location, conditions, landlord, safety;
     private EditText comments;
@@ -33,7 +34,7 @@ public class showReview extends DialogFragment {
     private ArrayList<Uri> imageUris = new ArrayList<>();
     private String reviewId;
 
-
+    //constructor
     public static showReview newInstance(String reviewId) {
         showReview fragment = new showReview();
         Bundle args = new Bundle();
@@ -53,6 +54,7 @@ public class showReview extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_show_review, null);
 
+        //Assign xml components to variables
         location = view.findViewById(R.id.ratingLocation);
         conditions = view.findViewById(R.id.ratingConditions);
         landlord = view.findViewById(R.id.ratingLandlord);

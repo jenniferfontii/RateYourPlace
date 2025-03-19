@@ -28,10 +28,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class settings extends AppCompatActivity {
+
     FirebaseAuth auth;
     private Switch notifications, location, galleryAccess;
     BottomNavigationView navBar;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -64,6 +66,7 @@ public class settings extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("all");
         getFirebaseCloudMessagingToken();
 
+        //Assign xml components to variables
         ImageButton back = findViewById(R.id.back);
         navBar = findViewById(R.id.bottom_navigation);
         TextView deleteAccount = findViewById(R.id.deleteAccount);
@@ -76,6 +79,7 @@ public class settings extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
 
+        //Chack that user is logged in
         if (user != null) {
             Profile.loadProfilePicture(this, profilePic);
             welcome.setText(String.format("Welcome %s", user.getEmail()));
@@ -84,6 +88,7 @@ public class settings extends AppCompatActivity {
             finish();
         }
 
+        //navbar action listener and focus
         navBar.getMenu().setGroupCheckable(0, true, false);
         for (int i = 0; i < navBar.getMenu().size(); i++) {
             navBar.getMenu().getItem(i).setChecked(false);
@@ -112,8 +117,10 @@ public class settings extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "Delete account");
         });
 
+        //Check permissions
         checkPermissions();
 
+        //Set switches accordig to permissions
         notifications.setOnCheckedChangeListener((buttonView, isChecked) -> handleNotificationPermission(isChecked));
         location.setOnCheckedChangeListener((buttonView, isChecked) -> handleLocationPermission(isChecked));
         galleryAccess.setOnCheckedChangeListener((buttonView, isChecked) -> handleGalleryPermission(isChecked));
@@ -128,6 +135,7 @@ public class settings extends AppCompatActivity {
 
         galleryAccess.setChecked(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
+
 
     private void handleNotificationPermission(boolean enable) {
         if (enable) {

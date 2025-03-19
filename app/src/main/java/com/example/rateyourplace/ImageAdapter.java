@@ -36,7 +36,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         Uri imageUri = imageUris.get(position);
 
         if (imageUri != null) {
-            // Picasso to load image
+            // uses Picasso library to load image
             Picasso.get()
                     .load(imageUri)  // Load the image from the Uri
                     .placeholder(R.drawable.ic_placeholder)  // Placeholder if image is not available

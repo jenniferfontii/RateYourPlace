@@ -21,6 +21,7 @@ public class user extends AppCompatActivity {
 
     private FirebaseAuth auth;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -39,6 +40,7 @@ public class user extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         BottomNavigationView navBar = findViewById(R.id.bottom_navigation);
         navBar.setSelectedItemId(R.id.nav_account);
         TextView manageAccount = findViewById(R.id.manageAccount);
@@ -50,6 +52,7 @@ public class user extends AppCompatActivity {
         ImageView profilePic = findViewById(R.id.profilePic);
         TextView welcome = findViewById(R.id.welcome);
 
+        //check that user is logged in
         if (user != null) {
             Profile.loadProfilePicture(this, profilePic);
             welcome.setText(String.format("Welcome %s", user.getEmail()));
@@ -59,6 +62,7 @@ public class user extends AppCompatActivity {
             finish();
         }
 
+        //Action listeners
         manageAccount.setOnClickListener(view -> {
             startActivity(new Intent(user.this, accountManagement.class));
         });
@@ -77,7 +81,7 @@ public class user extends AppCompatActivity {
             startActivity(intent);
         });
 
-
+        //navbar action listener
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 

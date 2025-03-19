@@ -2,10 +2,8 @@ package com.example.rateyourplace;
 
 import android.util.Log;
 
-import com.example.rateyourplace.Review;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +12,11 @@ public class Property {
     private String address;
     private List<String> imageUris;
 
+    //Firebase wants an empty constructor
     public Property() {
     }
 
+    //Constructor
     public Property(String address, List<String> imageUris) {
         this.address = address;
         this.imageUris = imageUris;
@@ -34,6 +34,7 @@ public class Property {
         void onReviewsFetched(Map<String, Float> averages, int reviewCount);
     }
 
+    // Gets total average rating
     public float getAverageRating(Map<String, Float> averages) {
         if (averages.isEmpty()) return 0f; // Return 0 if no reviews
 
@@ -44,6 +45,7 @@ public class Property {
         return total / averages.size(); // Divide by number of rating categories
     }
 
+    //From reviews gets average for each category
     public void fetchAverageRatings(FirebaseFirestore db, ReviewFetchCallback callback) {
         db.collection("reviews")
                 .whereEqualTo("propertyId", address) // Assuming `address` is used as an ID
@@ -76,6 +78,7 @@ public class Property {
                 .addOnFailureListener(e -> callback.onReviewsFetched(new HashMap<>(), 0));
     }
 
+    // Gets the first Image
     public String getFirstImageUrl() {
         List<String> imageUrls = getImageUris();
 

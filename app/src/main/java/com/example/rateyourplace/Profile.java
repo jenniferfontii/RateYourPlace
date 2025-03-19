@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
-
+// Helper for authentication things
 public class Profile {
     public static void loadProfilePicture(Context context, ImageView imageView) {
         FirebaseAuth auth = FirebaseAuth.getInstance();

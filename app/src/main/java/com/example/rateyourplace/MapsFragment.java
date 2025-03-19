@@ -33,12 +33,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MapsFragment extends Fragment {
 
+    //Global variables
     private GoogleMap mMap;
     private FirebaseFirestore db;
     private FusedLocationProviderClient fusedLocationClient;
     private boolean firstLocationSet = false;
     private ActivityResultLauncher<String> locationPermissionLauncher;
 
+    //Shows map
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
@@ -102,6 +104,7 @@ public class MapsFragment extends Fragment {
         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    //If permissions are given get user location
     private void checkUserLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -115,6 +118,7 @@ public class MapsFragment extends Fragment {
         }
     }
 
+    //Gets properties from firestore db
     private void fetchPropertiesFromFirestore() {
         db = FirebaseFirestore.getInstance();
         CollectionReference propertiesRef = db.collection("properties");
@@ -125,6 +129,7 @@ public class MapsFragment extends Fragment {
                     Double longitude = document.getDouble("longitude");
                     String address = document.getString("address");
 
+                    // Add a marker for each property
                     if (latitude != null && longitude != null && address != null) {
                         LatLng location = new LatLng(latitude, longitude);
                         mMap.addMarker(new MarkerOptions()
@@ -142,7 +147,7 @@ public class MapsFragment extends Fragment {
                 if (!firstLocationSet) {
                     Toast.makeText(getActivity(), "No properties found", Toast.LENGTH_SHORT).show();
                 }
-
+                // If marker is clicked it opens the property
                 mMap.setOnMarkerClickListener(marker -> {
                     String propertyId = (String) marker.getTag();
                     openPropertyDetails(propertyId);
