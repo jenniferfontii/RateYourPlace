@@ -87,6 +87,7 @@ public class accountManagement extends AppCompatActivity {
 
         email.setEnabled(false);
 
+        navBar = findViewById(R.id.bottom_navigation);
         navBar.getMenu().setGroupCheckable(0, true, false);
         for (int i = 0; i < navBar.getMenu().size(); i++) {
             navBar.getMenu().getItem(i).setChecked(false);
