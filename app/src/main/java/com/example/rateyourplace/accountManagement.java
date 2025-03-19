@@ -186,7 +186,7 @@ public class accountManagement extends AppCompatActivity {
                 inputStream.close();
 
                 runOnUiThread(() -> insertPicture.setImageURI(Uri.fromFile(profileImageFile)));
-
+                saveProfilePictureToFirestore(profileImageFile.getName());
                 Toast.makeText(this, "Profile picture updated!", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
@@ -194,5 +194,26 @@ public class accountManagement extends AppCompatActivity {
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
         }
     }
+    private void saveProfilePictureToFirestore(String fileName) {
+        String userId = auth.getCurrentUser().getUid();
+
+        if (userId == null) {
+            Toast.makeText(this, "User ID is null!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("profile_picture", fileName);
+
+        firestore.collection("users").document(userId).set(data, SetOptions.merge())  // Merges if the document exists, creates if it doesn't
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Uploaded to Firebase!", Toast.LENGTH_SHORT).show();
+                    Profile.loadProfilePicture(this, insertPicture);
+                }).addOnFailureListener(e -> {
+                    Log.e("ProfilePictureDebug", "Failed to save profile picture: " + e.getMessage());
+                    Toast.makeText(this, "Failed to save profile picture", Toast.LENGTH_SHORT).show();
+                });
+    }
 
 }
+
