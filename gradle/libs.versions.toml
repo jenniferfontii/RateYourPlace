@@ -15,6 +15,7 @@ playServicesMaps = "18.1.0"
 firebaseFirestore = "25.1.2"
 firebaseStorage = "21.0.1"
 playServicesLocation = "21.3.0"
+firebaseMessaging = "24.1.0"
 
 [libraries]
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
@@ -32,6 +33,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 picasso = { group = "com.squareup.picasso", name = "picasso", version = "2.71828" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

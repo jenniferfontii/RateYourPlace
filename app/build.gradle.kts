@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.picasso)
     implementation(libs.play.services.location)
+    implementation(libs.firebase.messaging)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
