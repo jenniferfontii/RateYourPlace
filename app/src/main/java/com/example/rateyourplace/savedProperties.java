@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class savedProperties extends AppCompatActivity {
+    //set global variables
     private ListView listView;
     private PropertyAdapter propertyAdapter;
     private List<Property> propertyList = new ArrayList<>();
@@ -33,6 +34,7 @@ public class savedProperties extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     BottomNavigationView navBar;
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -51,6 +53,7 @@ public class savedProperties extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         ImageButton mapView = findViewById(R.id.searchMap);
         navBar = findViewById(R.id.bottom_navigation);
         listView = findViewById(R.id.listView);
@@ -63,6 +66,7 @@ public class savedProperties extends AppCompatActivity {
 
         navBar.setSelectedItemId(R.id.nav_saved);
 
+        //if searchview is selected hides navabr for better design
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 navBar.setVisibility(View.GONE);
@@ -70,6 +74,7 @@ public class savedProperties extends AppCompatActivity {
                 navBar.setVisibility(View.VISIBLE);
             }
         });
+        //Query listener for searchbox
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -87,7 +92,7 @@ public class savedProperties extends AppCompatActivity {
                 return false;
             }
         });
-
+        //navbar action listeners
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -118,6 +123,7 @@ public class savedProperties extends AppCompatActivity {
 
     }
 
+    // Fetches properties from db and displays them
     private void fetchProperties(FirebaseUser user) {
 
         String userId = user.getUid();
@@ -160,6 +166,7 @@ public class savedProperties extends AppCompatActivity {
             Toast.makeText(this, "Error fetching saved properties", Toast.LENGTH_SHORT).show();
         });
     }
+    // Fetches properties from DB that match the query and displays them
     private void searchProperties(FirebaseUser user, String searchQuery) {
 
         String userId = user.getUid();

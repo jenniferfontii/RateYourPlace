@@ -13,11 +13,9 @@ import com.google.firebase.messaging.RemoteMessage;
 public class FirebaseInstanceService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // Handle FCM message
         if (remoteMessage.getData().size() > 0) {
             Log.d("FCM Message", "Message data payload: " +
                     remoteMessage.getData());
-            // Handle data payload
         }
         if (remoteMessage.getNotification() != null) {
             Log.d("FCM Message", "Message Notification Body: " +
@@ -27,6 +25,7 @@ public class FirebaseInstanceService extends FirebaseMessagingService {
     }
 
     private void handleNotification(RemoteMessage remoteMessage) {
+        // Build a notification with the received message details
         NotificationCompat.Builder builder = new
                 NotificationCompat.Builder(getApplicationContext(), "firebase")
                 .setSmallIcon(R.drawable.ic_launcher_background)
@@ -35,11 +34,13 @@ public class FirebaseInstanceService extends FirebaseMessagingService {
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
+        // Check for notification permission before displaying
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.POST_NOTIFICATIONS) !=
                 PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        // Display the notification
         notificationManager.notify(1, builder.build());
     }
 }

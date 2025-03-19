@@ -36,13 +36,14 @@ import java.util.Map;
 
 public class accountManagement extends AppCompatActivity {
 
+    //set global variables
     private static final int IMAGE_PICKER_REQUEST_CODE = 100;
-
     private ImageView insertPicture;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     BottomNavigationView navBar;
 
+    //image picker
     private final ActivityResultLauncher<Intent> pictureSelectionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == RESULT_OK) {
             Uri selectedImageUri = result.getData().getData();
@@ -52,6 +53,7 @@ public class accountManagement extends AppCompatActivity {
         }
     });
 
+    //On resume method, used if activity is accessed using a back button
     @Override
     protected void onResume() {
         super.onResume();
@@ -74,26 +76,23 @@ public class accountManagement extends AppCompatActivity {
             return insets;
         });
 
+        //Assign xml components to variables
         Button signout = findViewById(R.id.signOut);
         TextView changepsw = findViewById(R.id.changePsw);
         ImageButton back = findViewById(R.id.back);
         EditText email = findViewById(R.id.email);
         insertPicture = findViewById(R.id.account);
 
+        //Initialize firestore Db and Auth service, get current user
         FirebaseApp.initializeApp(this);
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
 
+        //Set email as not enable so that it can't be changes
         email.setEnabled(false);
 
-        navBar = findViewById(R.id.bottom_navigation);
-        navBar.getMenu().setGroupCheckable(0, true, false);
-        for (int i = 0; i < navBar.getMenu().size(); i++) {
-            navBar.getMenu().getItem(i).setChecked(false);
-        }
-        navBar.getMenu().setGroupCheckable(0, true, true);
-
+        //set up user details
         if (user != null) {
             email.setText(user.getEmail());
             Profile.loadProfilePicture(this, insertPicture);
@@ -103,10 +102,20 @@ public class accountManagement extends AppCompatActivity {
             finish();
         }
 
+        //Back button returns to previous screen
         back.setOnClickListener(view -> {
             finish();
         });
 
+        //Set navbar focus to none since this page is not connected directly with it
+        navBar = findViewById(R.id.bottom_navigation);
+        navBar.getMenu().setGroupCheckable(0, true, false);
+        for (int i = 0; i < navBar.getMenu().size(); i++) {
+            navBar.getMenu().getItem(i).setChecked(false);
+        }
+        navBar.getMenu().setGroupCheckable(0, true, true);
+
+        //navbar action listeners
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -123,26 +132,31 @@ public class accountManagement extends AppCompatActivity {
             return false;
         });
 
+        //Call change password dialog when button is pressed
         changepsw.setOnClickListener(view -> {
             changePassword dialog = new changePassword();
             dialog.show(getSupportFragmentManager(), "ChangePassword");
         });
 
+        //Sign out action listener
         signout.setOnClickListener(view -> {
             auth.signOut();
             Intent intent = new Intent(accountManagement.this, MainActivity.class);
             startActivity(intent);
         });
 
+        //Change profile picture by clicking the image
         insertPicture.setOnClickListener(view -> openPictures());
 
     }
 
+    //Opens image picker
     private void openPictures() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pictureSelectionLauncher.launch(intent);
     }
 
+    //Callback
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -155,6 +169,7 @@ public class accountManagement extends AppCompatActivity {
         }
     }
 
+    //Stores profile picture locally
     private void saveImageLocally(Uri imageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
@@ -171,7 +186,6 @@ public class accountManagement extends AppCompatActivity {
                 inputStream.close();
 
                 runOnUiThread(() -> insertPicture.setImageURI(Uri.fromFile(profileImageFile)));
-                saveProfilePictureToFirestore(profileImageFile.getName());
 
                 Toast.makeText(this, "Profile picture updated!", Toast.LENGTH_SHORT).show();
             }
@@ -179,28 +193,6 @@ public class accountManagement extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
         }
-    }
-
-
-    private void saveProfilePictureToFirestore(String fileName) {
-        String userId = auth.getCurrentUser().getUid();
-
-        if (userId == null) {
-            Toast.makeText(this, "User ID is null!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("profile_picture", fileName);
-
-        firestore.collection("users").document(userId).set(data, SetOptions.merge())  // Merges if the document exists, creates if it doesn't
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Uploaded to Firebase!", Toast.LENGTH_SHORT).show();
-                    Profile.loadProfilePicture(this, insertPicture);
-                }).addOnFailureListener(e -> {
-                    Log.e("ProfilePictureDebug", "Failed to save profile picture: " + e.getMessage());
-                    Toast.makeText(this, "Failed to save profile picture", Toast.LENGTH_SHORT).show();
-                });
     }
 
 }

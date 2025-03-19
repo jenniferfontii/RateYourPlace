@@ -25,6 +25,7 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
     private Context context;
     private String caller;
 
+    //Constructor
     public ReviewAdapter(Context context, List<Review> reviews, String caller) {
         super(context, 0, reviews);
         this.context = context;
@@ -40,6 +41,7 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_review, parent, false);
         }
 
+        //Set fields
         Review review = getItem(position);
         TextView userEmail = convertView.findViewById(R.id.userEmail);
         RatingBar ratingBar = convertView.findViewById(R.id.ratingBar);

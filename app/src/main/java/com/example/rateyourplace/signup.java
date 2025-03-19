@@ -63,6 +63,7 @@ public class signup extends AppCompatActivity {
         });
     }
 
+    //creates account
     private void registerUser() {
         String email = emailEt.getText().toString().trim();
         String password = passwordEt.getText().toString().trim();
