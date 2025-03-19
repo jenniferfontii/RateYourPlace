@@ -7,16 +7,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -59,7 +66,7 @@ public class addProperty extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(imageAdapter);
 
-        selectImagesBtn.setOnClickListener(v -> openImagePicker());
+        selectImagesBtn.setOnClickListener(v -> checkGalleryPermission());
 
         submitBtn.setOnClickListener(v -> {
             savePropertyToFirebase();
@@ -68,9 +75,7 @@ public class addProperty extends AppCompatActivity {
             Toast.makeText(this, "Property added successfully", Toast.LENGTH_SHORT).show();
         });
 
-        back.setOnClickListener(view -> {
-            finish();
-        });
+        back.setOnClickListener(view -> finish());
 
         addressFinderBtn.setOnClickListener(view -> {
             findAddress dialog = new findAddress((address, latitude, longitude) -> {
@@ -101,35 +106,60 @@ public class addProperty extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                try {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Intent data = result.getData();
-
-                        if (data.getClipData() != null) {
-                            // Multiple images selected
-                            int count = data.getClipData().getItemCount();
-                            for (int i = 0; i < count; i++) {
-                                ClipData.Item item = data.getClipData().getItemAt(i);
-                                if (item != null && item.getUri() != null) {
-                                    imageUris.add(item.getUri());
-                                }
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    if (data.getClipData() != null) {
+                        // Multiple images selected
+                        int count = data.getClipData().getItemCount();
+                        for (int i = 0; i < count; i++) {
+                            ClipData.Item item = data.getClipData().getItemAt(i);
+                            if (item != null && item.getUri() != null) {
+                                imageUris.add(item.getUri());
                             }
-                        } else if (data.getData() != null) {
-                            // Single image selected
-                            imageUris.add(data.getData());
                         }
-
-                        // Notify the adapter to update the RecyclerView
-                        imageAdapter.notifyDataSetChanged();
+                    } else if (data.getData() != null) {
+                        // Single image selected
+                        imageUris.add(data.getData());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "Error selecting images", Toast.LENGTH_SHORT).show();
+
+                    // Notify the adapter to update the RecyclerView
+                    imageAdapter.notifyDataSetChanged();
                 }
             }
     );
 
-    // Open gallery to select images
+    private final ActivityResultLauncher<String> galleryPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if (isGranted) {
+                    openImagePicker();
+                } else {
+                    Toast.makeText(this, "Gallery permission denied. Cannot select images.", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
+
+    private void checkGalleryPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+            openImagePicker();
+        } else {
+            showPermissionDialog();
+        }
+    }
+
+    private void showPermissionDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Gallery Permission Needed")
+                .setMessage("This app requires access to your gallery to select images. Would you like to grant permission?")
+                .setPositiveButton("Yes", (dialog, which) -> requestGalleryPermission())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void requestGalleryPermission() {
+        galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+    }
+
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -137,7 +167,6 @@ public class addProperty extends AppCompatActivity {
         imagePickerLauncher.launch(Intent.createChooser(intent, "Select Images"));
     }
 
-    // Save property details to Firebase (with image URIs)
     private void savePropertyToFirebase() {
         String address = this.addressET.getText().toString().trim();
 
@@ -167,28 +196,24 @@ public class addProperty extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Error saving property", Toast.LENGTH_SHORT).show());
     }
 
-    // Save image locally
     private Uri saveImageLocally(Uri imageUri) {
         try {
-            // Get input stream from the image URI
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-            // Create a file to save the image
             File directory = new File(getExternalFilesDir(null), "property_images");
             if (!directory.exists()) {
-                directory.mkdirs();  // Create the directory if it doesn't exist
+                directory.mkdirs();
             }
 
-            String fileName = "image_" + System.currentTimeMillis() + ".png";  // Use timestamp to make the file name unique
+            String fileName = "image_" + System.currentTimeMillis() + ".png";
             File imageFile = new File(directory, fileName);
 
             FileOutputStream outputStream = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);  // Save as PNG (or JPEG)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             outputStream.flush();
             outputStream.close();
 
-            // Return the URI of the saved file
             return Uri.fromFile(imageFile);
         } catch (Exception e) {
             e.printStackTrace();
