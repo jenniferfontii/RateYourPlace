@@ -37,11 +37,7 @@ public class savedProperties extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         navBar = findViewById(R.id.bottom_navigation);
-        navBar.getMenu().setGroupCheckable(0, true, false);
-        for (int i = 0; i < navBar.getMenu().size(); i++) {
-            navBar.getMenu().getItem(i).setChecked(false);
-        }
-        navBar.getMenu().setGroupCheckable(0, true, true);
+        navBar.setSelectedItemId(R.id.nav_saved);
     }
 
     @Override
@@ -57,13 +53,6 @@ public class savedProperties extends AppCompatActivity {
 
         ImageButton mapView = findViewById(R.id.searchMap);
         navBar = findViewById(R.id.bottom_navigation);
-        navBar = findViewById(R.id.bottom_navigation);
-        navBar.getMenu().setGroupCheckable(0, true, false);
-        for (int i = 0; i < navBar.getMenu().size(); i++) {
-            navBar.getMenu().getItem(i).setChecked(false);
-        }
-        navBar.getMenu().setGroupCheckable(0, true, true);
-
         listView = findViewById(R.id.listView);
         propertyList = new ArrayList<>();
         propertyAdapter = new PropertyAdapter(this, propertyList);
@@ -71,6 +60,9 @@ public class savedProperties extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         SearchView searchView = findViewById(R.id.searchView);
+
+        navBar.setSelectedItemId(R.id.nav_saved);
+
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 navBar.setVisibility(View.GONE);
@@ -145,11 +137,6 @@ public class savedProperties extends AppCompatActivity {
                                     if (!queryDocumentSnapshots.isEmpty()) {
                                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                             String address = document.getString("address");
-                                            int location = document.contains("location") ? document.getLong("location").intValue() : 0;
-                                            int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
-                                            int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
-                                            int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
-
                                             List<String> imageUris = (List<String>) document.get("imageUris");
                                             if (imageUris == null) {
                                                 imageUris = new ArrayList<>();
@@ -193,11 +180,6 @@ public class savedProperties extends AppCompatActivity {
                                         if (!queryDocumentSnapshots.isEmpty()) {
                                             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                                 String address = document.getString("address");
-                                                int location = document.contains("location") ? document.getLong("location").intValue() : 0;
-                                                int propertyCondition = document.contains("property_condition") ? document.getLong("property_condition").intValue() : 0;
-                                                int safety = document.contains("safety") ? document.getLong("safety").intValue() : 0;
-                                                int landlord = document.contains("landlord") ? document.getLong("landlord").intValue() : 0;
-
                                                 List<String> imageUris = (List<String>) document.get("imageUris");
                                                 if (imageUris == null) {
                                                     imageUris = new ArrayList<>();
